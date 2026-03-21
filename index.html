@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRADOK v3 — IA de Marketing Estratégico | Tutory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg-deep:#020617;
+  --bg-mid:#0a0f1e;
+  --neon:#00d4ff;
+  --neon2:#0ea5e9;
+  --neon3:#38bdf8;
+  --neon-glow:rgba(0,212,255,.15);
+  --neon-glow2:rgba(0,212,255,.06);
+  --purple:#a855f7;
+  --purple2:#c084fc;
+  --green:#22c55e;
+  --green2:#4ade80;
+  --orange:#f59e0b;
+  --pink:#f472b6;
+  --red:#ef4444;
+  --yellow:#eab308;
+  --glass:rgba(255,255,255,.04);
+  --glass2:rgba(255,255,255,.07);
+  --glass-border:rgba(255,255,255,.08);
+  --glass-border-hover:rgba(0,212,255,.25);
+  --t1:#f0f9ff;
+  --t2:#94a3b8;
+  --t3:#475569;
+  --sidebar-bg:rgba(2,6,23,.85);
+}
+
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg-deep);
+  color:var(--t1);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ===== BACKGROUND: Black → Neon Blue gradient + floating numbers ===== */
+.bg-gradient{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 100%, rgba(0,212,255,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 0%, rgba(14,165,233,.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(168,85,247,.03) 0%, transparent 50%),
+    linear-gradient(180deg, #020617 0%, #050d1a 30%, #0a1628 60%, #071225 100%);
+  pointer-events:none;
+}
+
+/* Floating numbers layer */
+.floating-numbers{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  pointer-events:none;overflow:hidden;
+}
+.floating-numbers span{
+  position:absolute;
+  font-family:'JetBrains Mono',monospace;
+  color:rgba(0,212,255,.04);
+  font-size:14px;
+  font-weight:500;
+  animation:floatUp linear infinite;
+  white-space:nowrap;
+}
+@keyframes floatUp{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-100px) rotate(15deg);opacity:0}
+}
+
+/* Grid overlay */
+.bg-grid{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,.015) 1px, transparent 1px);
+  background-size:80px 80px;
+  pointer-events:none;
+}
+
+/* Neon scan line */
+.scan-line{
+  position:fixed;top:0;left:0;width:100%;height:2px;z-index:0;
+  background:linear-gradient(90deg, transparent 0%, rgba(0,212,255,.15) 30%, rgba(0,212,255,.3) 50%, rgba(0,212,255,.15) 70%, transparent 100%);
+  animation:scanDown 8s linear infinite;
+  pointer-events:none;
+}
+@keyframes scanDown{0%{top:-2px}100%{top:100vh}}
+
+/* ===== APP LAYOUT ===== */
+.app{display:flex;min-height:100vh;position:relative;z-index:1}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:260px;
+  background:var(--sidebar-bg);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  border-right:1px solid rgba(0,212,255,.08);
+  position:fixed;top:0;left:0;height:100vh;z-index:10;
+  overflow-y:auto;
+}
+.logo{
+  padding:22px 20px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(0,212,255,.06);
+}
+.logo-icon{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--neon),var(--purple));
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:900;color:#fff;
+  box-shadow:0 0 20px rgba(0,212,255,.3),inset 0 1px 0 rgba(255,255,255,.2);
+  position:relative;
+}
+.logo-icon::after{
+  content:'';position:absolute;inset:-2px;border-radius:16px;
+  background:linear-gradient(135deg,var(--neon),var(--purple));
+  z-index:-1;opacity:.4;filter:blur(8px);
+}
+.logo h1{font-size:20px;font-weight:900;letter-spacing:3px;color:var(--neon);text-shadow:0 0 30px rgba(0,212,255,.4)}
+.logo small{font-size:9px;color:var(--t3);display:block;letter-spacing:1.5px;margin-top:2px;font-weight:500}
+
+.nav{padding:12px 0}
+.nav-section{padding:8px 20px;font-size:9px;text-transform:uppercase;letter-spacing:2.5px;color:var(--t3);margin-top:8px;font-weight:600}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;
+  color:var(--t2);font-size:12px;font-weight:500;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  border-left:3px solid transparent;
+  position:relative;
+}
+.nav-item:hover{
+  background:rgba(0,212,255,.05);color:var(--t1);border-left-color:rgba(0,212,255,.4);
+}
+.nav-item.active{
+  background:rgba(0,212,255,.08);color:var(--neon);border-left-color:var(--neon);
+  text-shadow:0 0 20px rgba(0,212,255,.3);
+}
+.nav-item .ic{font-size:15px;width:20px;text-align:center}
+.nav-badge{
+  margin-left:auto;
+  background:rgba(0,212,255,.15);color:var(--neon);
+  font-size:9px;padding:2px 7px;border-radius:8px;font-weight:700;
+  border:1px solid rgba(0,212,255,.2);
+}
+
+/* ===== MAIN CONTENT ===== */
+.main{margin-left:260px;flex:1;padding:24px;min-height:100vh}
+.panel{display:none}.panel.active{display:block}
+
+.page-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.page-hdr h2{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.page-hdr p{color:var(--t2);font-size:12px;margin-top:4px;font-weight:400}
+
+/* ===== GRID SYSTEM ===== */
+.grid{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+
+/* ===== GLASS CARDS — PREMIUM ===== */
+.card{
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:18px;
+  padding:20px;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent);
+}
+.card:hover{
+  border-color:rgba(0,212,255,.2);
+  background:rgba(255,255,255,.05);
+  box-shadow:0 8px 40px rgba(0,212,255,.06),0 0 0 1px rgba(0,212,255,.08);
+  transform:translateY(-2px);
+}
+
+.card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.card-ic{
+  width:40px;height:40px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  backdrop-filter:blur(10px);
+}
+.card-t{font-size:14px;font-weight:700;letter-spacing:-.2px}
+.card-s{font-size:10px;color:var(--t3);font-weight:400}
+
+/* Stats */
+.stat-v{font-size:32px;font-weight:900;margin:8px 0 4px;letter-spacing:-1px}
+.stat-l{font-size:10px;color:var(--t2);font-weight:500;letter-spacing:.5px}
+
+/* Stripe accent card */
+.sc{position:relative;overflow:hidden}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:18px 18px 0 0}
+
+/* Chips */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.chip{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:8px;padding:4px 10px;font-size:10px;
+  color:var(--t2);transition:all .3s;
+  backdrop-filter:blur(10px);
+  font-weight:500;
+}
+.chip:hover{
+  background:rgba(0,212,255,.08);
+  border-color:rgba(0,212,255,.2);
+  color:var(--neon);
+  box-shadow:0 0 12px rgba(0,212,255,.08);
+}
+
+.cnt{
+  display:inline-flex;align-items:center;
+  padding:3px 9px;border-radius:8px;
+  font-size:10px;font-weight:700;color:#fff;
+}
+
+/* ===== FLOW STEPS ===== */
+.flow-c{display:flex;gap:3px;align-items:stretch;margin:20px 0}
+.flow-s{
+  flex:1;padding:16px 10px;
+  background:rgba(255,255,255,.02);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.05);
+  text-align:center;transition:all .4s;font-size:11px;
+}
+.flow-s:first-child{border-radius:14px 0 0 14px}
+.flow-s:last-child{border-radius:0 14px 14px 0}
+.flow-s.active{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3);box-shadow:0 0 20px rgba(0,212,255,.08)}
+.flow-s.done{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.3)}
+.flow-n{font-size:24px;font-weight:900;opacity:.15;margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.flow-s.active .flow-n{opacity:1;color:var(--neon);text-shadow:0 0 20px rgba(0,212,255,.5)}
+.flow-s.done .flow-n{opacity:1;color:var(--green)}
+.flow-l{font-weight:700;margin-bottom:3px;font-size:11px;letter-spacing:.5px}
+.flow-ss{font-size:9px;color:var(--t3);font-weight:400}
+
+/* ===== INPUTS ===== */
+textarea.wi{
+  width:100%;
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;padding:16px;
+  color:var(--t1);font-family:'Inter',sans-serif;font-size:13px;
+  resize:vertical;min-height:110px;
+  transition:all .3s;
+}
+textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20px rgba(0,212,255,.06)}
+
+.sel-r{display:flex;gap:12px;margin:14px 0}
+.sel-b{flex:1}
+.sel-b label{font-size:9px;color:var(--t3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.sel-b select{
+  width:100%;
+  background:#0f172a;
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:10px;
+  color:#e2e8f0;font-family:'Inter',sans-serif;font-size:12px;
+  transition:all .3s;
+  -webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;
+  padding-right:30px;
+}
+.sel-b select:focus{outline:none;border-color:rgba(0,212,255,.4);box-shadow:0 0 12px rgba(0,212,255,.1)}
+.sel-b select option{background:#0f172a;color:#e2e8f0;padding:8px}
+.sel-b select option:checked{background:#1e293b;color:#00d4ff}
+
+/* Reference images upload */
+.ref-upload-zone{
+  border:1px dashed rgba(255,255,255,.1);border-radius:12px;
+  padding:16px;text-align:center;cursor:pointer;
+  transition:all .3s;position:relative;min-height:80px;
+  background:rgba(255,255,255,.02);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+}
+.ref-upload-zone:hover{border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.03)}
+.ref-upload-zone input[type="file"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.ref-thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.ref-thumb{
+  width:60px;height:60px;border-radius:8px;object-fit:cover;
+  border:1px solid rgba(255,255,255,.08);
+  transition:all .3s;
+}
+.ref-thumb:hover{border-color:var(--neon);box-shadow:0 0 12px rgba(0,212,255,.15)}
+
+/* Links field */
+.links-field{
+  width:100%;
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;padding:12px;
+  color:var(--t1);font-family:'Inter',sans-serif;font-size:12px;
+  resize:none;min-height:60px;transition:all .3s;
+}
+.links-field:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 12px rgba(0,212,255,.08)}
+
+/* Platform checkboxes */
+.platform-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.platform-opt{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:12px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  cursor:pointer;transition:all .3s;
+  font-size:12px;color:var(--t2);font-weight:500;
+}
+.platform-opt:hover{border-color:rgba(0,212,255,.2);color:var(--t1)}
+.platform-opt.selected{
+  border-color:rgba(0,212,255,.4);
+  background:rgba(0,212,255,.08);
+  color:var(--neon);
+  box-shadow:0 0 16px rgba(0,212,255,.08);
+}
+.platform-opt .plat-check{
+  width:16px;height:16px;border-radius:4px;
+  border:2px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;transition:all .3s;
+}
+.platform-opt.selected .plat-check{
+  background:var(--neon);border-color:var(--neon);color:#020617;
+}
+
+/* Creative output gallery */
+.creative-gallery{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:16px;margin-top:16px;
+}
+.creative-item{
+  background:rgba(255,255,255,.02);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;overflow:hidden;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+}
+.creative-item:hover{
+  border-color:rgba(0,212,255,.2);
+  box-shadow:0 8px 30px rgba(0,212,255,.06);
+  transform:translateY(-3px);
+}
+.creative-preview{
+  width:100%;aspect-ratio:4/5;
+  background:linear-gradient(135deg,rgba(0,212,255,.05),rgba(168,85,247,.05));
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.creative-preview img{width:100%;height:100%;object-fit:cover}
+.creative-preview .placeholder-art{
+  font-size:48px;opacity:.15;
+}
+.creative-info{padding:14px}
+.creative-info .cr-title{font-size:12px;font-weight:700;margin-bottom:4px}
+.creative-info .cr-meta{font-size:10px;color:var(--t3);margin-bottom:10px}
+.creative-info .cr-platform{
+  font-size:9px;padding:3px 8px;border-radius:6px;
+  display:inline-block;font-weight:600;letter-spacing:.5px;
+}
+.creative-actions{display:flex;gap:6px;margin-top:10px}
+.dl-btn{
+  flex:1;padding:8px;border:none;border-radius:8px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:10px;
+  cursor:pointer;transition:all .3s;text-align:center;
+  letter-spacing:.3px;
+}
+.dl-btn.jpeg{background:rgba(0,212,255,.1);color:var(--neon);border:1px solid rgba(0,212,255,.2)}
+.dl-btn.jpeg:hover{background:rgba(0,212,255,.2)}
+.dl-btn.png{background:rgba(168,85,247,.1);color:var(--purple);border:1px solid rgba(168,85,247,.2)}
+.dl-btn.png:hover{background:rgba(168,85,247,.2)}
+.dl-btn.svg{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.dl-btn.svg:hover{background:rgba(34,197,94,.2)}
+
+/* Progress bar */
+.gen-progress{
+  width:100%;height:4px;border-radius:2px;
+  background:rgba(255,255,255,.04);
+  overflow:hidden;margin:16px 0;
+}
+.gen-progress-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--neon),var(--purple));
+  box-shadow:0 0 10px rgba(0,212,255,.3);
+  transition:width .5s ease;
+  width:0%;
+}
+
+/* Agent working animation */
+@keyframes agentPulse{
+  0%,100%{opacity:.4}50%{opacity:1}
+}
+.agent-working{animation:agentPulse 1.5s ease-in-out infinite}
+
+/* Reference list items */
+.ref-item{
+  display:flex;gap:14px;padding:14px 16px;
+  border-radius:12px;background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.04);
+  margin-bottom:8px;transition:all .3s;
+  align-items:flex-start;
+}
+.ref-item:hover{background:rgba(255,255,255,.04);border-color:rgba(0,212,255,.1)}
+.ref-item .ref-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.1);
+}
+.ref-item .ref-body{flex:1;min-width:0}
+.ref-item .ref-title{font-size:12px;font-weight:700;margin-bottom:3px}
+.ref-item .ref-link{font-size:10px;color:var(--neon);word-break:break-all;text-decoration:none;display:block;margin-bottom:4px}
+.ref-item .ref-link:hover{text-decoration:underline}
+.ref-item .ref-reason{font-size:10px;color:var(--t3);line-height:1.5}
+.ref-item .ref-agent{
+  font-size:9px;padding:2px 8px;border-radius:5px;
+  background:rgba(168,85,247,.08);color:var(--purple);
+  border:1px solid rgba(168,85,247,.1);
+  display:inline-block;margin-top:4px;font-weight:600;
+}
+.ref-category{
+  font-size:10px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:1.5px;
+  margin:16px 0 8px;padding-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+/* ===== BUTTONS ===== */
+.btn{
+  padding:12px 28px;border:none;border-radius:12px;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;
+  cursor:pointer;transition:all .3s cubic-bezier(.4,0,.2,1);
+  display:inline-flex;align-items:center;gap:8px;
+  letter-spacing:.3px;
+}
+.btn-p{
+  background:linear-gradient(135deg,var(--neon),var(--neon2));
+  color:#020617;
+  box-shadow:0 4px 20px rgba(0,212,255,.25),0 0 0 1px rgba(0,212,255,.1);
+}
+.btn-p:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,212,255,.35),0 0 40px rgba(0,212,255,.15);
+}
+.btn-s{
+  background:rgba(255,255,255,.04);
+  backdrop-filter:blur(10px);
+  color:var(--t2);
+  border:1px solid rgba(255,255,255,.08);
+}
+.btn-s:hover{background:rgba(255,255,255,.07);color:var(--t1)}
+.btn-sm{padding:9px 18px;font-size:11px;border-radius:10px}
+
+/* ===== LOG ===== */
+.log{max-height:280px;overflow-y:auto;margin-top:12px}
+.log-i{
+  display:flex;align-items:flex-start;gap:10px;padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.02);font-size:11px;
+}
+.log-t{color:var(--t3);white-space:nowrap;font-size:10px;min-width:44px;padding-top:1px;font-family:'JetBrains Mono',monospace}
+.log-b{padding:2px 8px;border-radius:5px;font-size:8px;font-weight:700;white-space:nowrap}
+.log-tx{color:var(--t2);flex:1}
+
+/* ===== TEAM SECTION ===== */
+.team-hdr{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;
+  border-radius:14px;margin-bottom:14px;cursor:pointer;
+  backdrop-filter:blur(10px);
+  transition:all .3s;
+}
+.team-hdr:hover{transform:translateX(4px)}
+.team-hdr h3{font-size:15px;font-weight:700}
+.team-cnt{font-size:10px;color:var(--t3)}
+
+.agent-row{
+  display:flex;align-items:center;gap:10px;padding:7px 14px;
+  border-radius:10px;font-size:11px;transition:all .3s;
+}
+.agent-row:hover{background:rgba(255,255,255,.03);transform:translateX(4px)}
+.agent-nm{font-weight:600;min-width:150px}
+.agent-sp{color:var(--t3);font-size:10px;flex:1}
+.agent-sq{
+  font-size:9px;padding:3px 8px;border-radius:6px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.05);
+  color:var(--t3);font-weight:500;
+}
+
+/* ===== ANALYTICS ===== */
+.upload-zone{
+  border:2px dashed rgba(0,212,255,.15);border-radius:18px;
+  padding:50px;text-align:center;cursor:pointer;
+  transition:all .4s;position:relative;
+  background:rgba(0,212,255,.02);
+}
+.upload-zone:hover{
+  border-color:rgba(0,212,255,.4);
+  background:rgba(0,212,255,.04);
+  box-shadow:0 0 40px rgba(0,212,255,.06);
+}
+.upload-zone input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.upload-zone .uz-icon{font-size:48px;margin-bottom:12px;opacity:.25;filter:grayscale(.5)}
+.upload-zone .uz-text{font-size:13px;color:var(--t2);font-weight:500}
+.upload-zone .uz-sub{font-size:10px;color:var(--t3);margin-top:6px}
+
+.radar-container{width:100%;max-width:400px;margin:0 auto}
+.score-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.04);margin-top:5px;overflow:hidden;position:relative}
+.score-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.score-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+.score-label{font-size:11px;min-width:160px;color:var(--t2);font-weight:500}
+.score-val{font-size:13px;font-weight:800;min-width:40px;text-align:right;font-family:'JetBrains Mono',monospace}
+
+.benchmark-row{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-radius:12px;
+  background:rgba(255,255,255,.02);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.04);
+  margin-bottom:8px;
+  transition:all .3s;
+}
+.benchmark-row:hover{background:rgba(255,255,255,.04);border-color:rgba(0,212,255,.1)}
+.benchmark-name{font-size:12px;font-weight:600;min-width:130px}
+.benchmark-diff{font-size:13px;font-weight:800;min-width:65px;text-align:right;font-family:'JetBrains Mono',monospace}
+
+.preview-img{max-width:100%;max-height:300px;border-radius:14px;border:1px solid rgba(255,255,255,.06);object-fit:contain;background:rgba(0,0,0,.3)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1200px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.sidebar{width:60px}.main{margin-left:60px}.g2,.g3,.g4{grid-template-columns:1fr}.flow-c{flex-direction:column}.flow-s{border-radius:10px !important}}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,212,255,.15);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,212,255,.3)}
+
+/* ===== GLOW ANIMATION FOR KEY ELEMENTS ===== */
+@keyframes pulseNeon{
+  0%,100%{box-shadow:0 0 5px rgba(0,212,255,.2)}
+  50%{box-shadow:0 0 20px rgba(0,212,255,.4),0 0 40px rgba(0,212,255,.1)}
+}
+.neon-pulse{animation:pulseNeon 3s ease-in-out infinite}
+
+/* ===== NOISE TEXTURE OVERLAY ===== */
+.noise{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  pointer-events:none;opacity:.015;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+}
+
+/* Selection */
+::selection{background:rgba(0,212,255,.2);color:#fff}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND LAYERS -->
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div class="noise"></div>
+<div class="scan-line"></div>
+<div class="floating-numbers" id="floatingNumbers"></div>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-icon neon-pulse">B</div>
+    <div><h1>BRADOK</h1><small>12 Squads &middot; 151+ Agentes</small></div>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Principal</div>
+    <div class="nav-item active" onclick="go('dash')"><span class="ic">&#9632;</span><span>Dashboard</span></div>
+    <div class="nav-item" onclick="go('work')"><span class="ic">&#9998;</span><span>Workspace</span></div>
+    <div class="nav-item" onclick="go('pipe')"><span class="ic">&#8644;</span><span>Pipeline</span></div>
+    <div class="nav-item" onclick="go('analytics')"><span class="ic">&#128200;</span><span>Analytics</span><span class="nav-badge" style="background:rgba(34,197,94,.15);color:#22c55e;border-color:rgba(34,197,94,.3)">NEW</span></div>
+
+    <div class="nav-section">Times</div>
+    <div class="nav-item" onclick="go('joice')"><span class="ic">&#128269;</span><span>Time Joice</span><span class="nav-badge">48</span></div>
+    <div class="nav-item" onclick="go('lucas')"><span class="ic">&#127912;</span><span>Time Lucas</span><span class="nav-badge" style="background:rgba(168,85,247,.15);color:#a855f7;border-color:rgba(168,85,247,.3)">62</span></div>
+    <div class="nav-item" onclick="go('yan')"><span class="ic">&#10024;</span><span>Time Yan</span><span class="nav-badge" style="background:rgba(244,114,182,.15);color:#f472b6;border-color:rgba(244,114,182,.3)">41</span></div>
+
+    <div class="nav-section">Sistema</div>
+    <div class="nav-item" onclick="go('brand-assets')"><span class="ic">&#127912;</span><span>Brand Assets</span></div>
+    <div class="nav-item" onclick="go('cfg')"><span class="ic">&#9881;</span><span>Configurações</span></div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="panel active" id="p-dash">
+  <div class="page-hdr">
+    <div><h2>Dashboard BRADOK</h2><p>12 squads &middot; 151+ agentes &middot; 3 times &middot; Analytics integrado</p></div>
+    <button class="btn btn-p" onclick="go('work')">Nova Demanda</button>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:20px">
+    <div class="card">
+      <div class="stat-l">Agentes Ativos</div>
+      <div class="stat-v" style="color:var(--neon);text-shadow:0 0 30px rgba(0,212,255,.3)">151+</div>
+      <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,var(--neon),transparent);margin-top:8px;opacity:.5"></div>
+    </div>
+    <div class="card">
+      <div class="stat-l">Squads xquads</div>
+      <div class="stat-v" style="color:var(--purple);text-shadow:0 0 30px rgba(168,85,247,.3)">12</div>
+      <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,var(--purple),transparent);margin-top:8px;opacity:.5"></div>
+    </div>
+    <div class="card">
+      <div class="stat-l">Times Operacionais</div>
+      <div class="stat-v" style="color:var(--green);text-shadow:0 0 30px rgba(34,197,94,.3)">3</div>
+      <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,var(--green),transparent);margin-top:8px;opacity:.5"></div>
+    </div>
+    <div class="card">
+      <div class="stat-l">Dimensões Analytics</div>
+      <div class="stat-v" style="color:var(--orange);text-shadow:0 0 30px rgba(245,158,11,.3)">8</div>
+      <div style="height:3px;border-radius:2px;background:linear-gradient(90deg,var(--orange),transparent);margin-top:8px;opacity:.5"></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:13px;margin-bottom:14px;color:var(--t3);font-weight:600;letter-spacing:1px;text-transform:uppercase">Distribuição por Time</h3>
+  <div class="grid g3" style="margin-bottom:20px">
+    <div class="card sc" onclick="go('joice')" style="cursor:pointer">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--neon),var(--neon2));border-radius:18px 18px 0 0"></div>
+      <div class="card-hdr">
+        <div class="card-ic" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15)">&#128269;</div>
+        <div><div class="card-t">Time Joice</div><div class="card-s">Pesquisa &middot; Inteligência &middot; Estratégia</div></div>
+        <span class="cnt" style="background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(0,212,255,.1));border:1px solid rgba(0,212,255,.3);color:var(--neon)">48</span>
+      </div>
+      <div class="chips"><span class="chip">Brand Squad</span><span class="chip">Copy Squad (diag)</span><span class="chip">Data Squad</span><span class="chip">Advisory Board</span><span class="chip">Hormozi (hooks)</span><span class="chip">Storytelling (pesq)</span><span class="chip">Movement (análise)</span><span class="chip">C-Level (CMO)</span></div>
+    </div>
+    <div class="card sc" onclick="go('lucas')" style="cursor:pointer">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:18px 18px 0 0"></div>
+      <div class="card-hdr">
+        <div class="card-ic" style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.15)">&#127912;</div>
+        <div><div class="card-t">Time Lucas</div><div class="card-s">Criação &middot; Execução &middot; Visual</div></div>
+        <span class="cnt" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(168,85,247,.1));border:1px solid rgba(168,85,247,.3);color:var(--purple)">62</span>
+      </div>
+      <div class="chips"><span class="chip">Design Squad</span><span class="chip">Copy Squad (redação)</span><span class="chip">Storytelling (narrativa)</span><span class="chip">Hormozi (copy)</span><span class="chip">Brand (visual)</span><span class="chip">Claude Code</span></div>
+    </div>
+    <div class="card sc" onclick="go('yan')" style="cursor:pointer">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pink),var(--orange));border-radius:18px 18px 0 0"></div>
+      <div class="card-hdr">
+        <div class="card-ic" style="background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.15)">&#10024;</div>
+        <div><div class="card-t">Time Yan</div><div class="card-s">Refino &middot; Qualidade &middot; Premium</div></div>
+        <span class="cnt" style="background:linear-gradient(135deg,rgba(244,114,182,.2),rgba(244,114,182,.1));border:1px solid rgba(244,114,182,.3);color:var(--pink)">41</span>
+      </div>
+      <div class="chips"><span class="chip">Advisory Board</span><span class="chip">Copy Squad (refino)</span><span class="chip">Hormozi (otimização)</span><span class="chip">Movement (validação)</span><span class="chip">Cybersecurity</span><span class="chip">C-Level (COO)</span></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:13px;margin-bottom:14px;color:var(--t3);font-weight:600;letter-spacing:1px;text-transform:uppercase">Fluxo Autônomo (7 Etapas)</h3>
+  <div class="flow-c">
+    <div class="flow-s"><div class="flow-n">01</div><div class="flow-l">INTAKE</div><div class="flow-ss">Copy + formato</div></div>
+    <div class="flow-s"><div class="flow-n">02</div><div class="flow-l">INTELLIGENCE</div><div class="flow-ss">Time Joice (48)</div></div>
+    <div class="flow-s"><div class="flow-n">03</div><div class="flow-l">CRIAÇÃO</div><div class="flow-ss">Time Lucas (62)</div></div>
+    <div class="flow-s" style="border-color:rgba(245,158,11,.2)"><div class="flow-n" style="color:var(--orange);opacity:1">04</div><div class="flow-l" style="color:var(--orange)">APROVAÇÃO</div><div class="flow-ss">Checkpoint</div></div>
+    <div class="flow-s"><div class="flow-n">05</div><div class="flow-l">REFINO</div><div class="flow-ss">Time Yan (41)</div></div>
+    <div class="flow-s"><div class="flow-n">06</div><div class="flow-l">ANALYTICS</div><div class="flow-ss">8 dimensões</div></div>
+    <div class="flow-s"><div class="flow-n">07</div><div class="flow-l">EXPORT</div><div class="flow-ss">PNG final</div></div>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="panel" id="p-work">
+  <div class="page-hdr"><div><h2>Workspace</h2><p>Nova tarefa — Cole a copy, adicione referências e os 151+ agentes entregam os criativos prontos</p></div></div>
+
+  <!-- BLOCO 1: COPY + OPÇÕES -->
+  <div class="card" style="margin-bottom:16px">
+    <label style="font-size:9px;color:var(--neon);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:2px;font-weight:700">01 &mdash; Copy / Demanda</label>
+    <textarea class="wi" id="copyIn" placeholder="Cole sua copy aqui... Os agentes vão pesquisar, criar e refinar automaticamente."></textarea>
+
+    <div class="sel-r">
+      <div class="sel-b"><label>Formato</label><select id="fmtS"><option>Feed Instagram (1080x1350)</option><option>Stories/Reels (1080x1920)</option><option>Carrossel (1080x1350 multi)</option><option>Facebook (1080x1350)</option><option>YouTube Thumb (1280x720)</option><option>Banner Site (1920x600)</option><option>LinkedIn (1200x627)</option></select></div>
+      <div class="sel-b"><label>Categoria</label><select id="catS"><option>Estático</option><option>Carrossel</option><option>Stories Sequencial</option><option>Ads Creative</option></select></div>
+      <div class="sel-b"><label>Modo</label><select id="modeS"><option>Completo (12 squads)</option><option>Rápido (só Joice)</option><option>Só Pesquisa</option><option>Copy Enhancement</option><option>Traffic/Ads</option></select></div>
+      <div class="sel-b"><label>Objetivo</label><select id="objS"><option>Engajamento</option><option>Conversão</option><option>Awareness</option><option>Lançamento</option><option>Retenção</option></select></div>
+    </div>
+  </div>
+
+  <!-- BLOCO 2: IMAGENS DE REFERÊNCIA -->
+  <div class="card" style="margin-bottom:16px">
+    <label style="font-size:9px;color:var(--neon);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:2px;font-weight:700">02 &mdash; Referências Visuais</label>
+    <div class="grid g2" style="gap:14px">
+      <div>
+        <label style="font-size:10px;color:var(--t2);display:block;margin-bottom:6px;font-weight:500">Imagens de Referência</label>
+        <div class="ref-upload-zone" id="refUploadZone">
+          <input type="file" accept="image/jpeg,image/png,image/webp" multiple id="refFileInput" onchange="handleRefUpload(event)">
+          <span style="font-size:24px;opacity:.2">&#128444;</span>
+          <span style="font-size:11px;color:var(--t3)">Arraste imagens ou clique para adicionar</span>
+          <span style="font-size:9px;color:var(--t3)">JPEG, PNG, WebP &mdash; múltiplas imagens</span>
+        </div>
+        <div class="ref-thumbs" id="refThumbs"></div>
+      </div>
+      <div>
+        <label style="font-size:10px;color:var(--t2);display:block;margin-bottom:6px;font-weight:500">Links de Referência</label>
+        <textarea class="links-field" id="refLinks" placeholder="Cole links de referência (um por linha)&#10;Ex: https://dribbble.com/shots/exemplo&#10;https://www.behance.net/gallery/exemplo"></textarea>
+        <div style="font-size:9px;color:var(--t3);margin-top:4px">Dribbble, Behance, Pinterest, Instagram, sites de concorrentes...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 3: PLATAFORMA DE CRIAÇÃO -->
+  <div class="card" style="margin-bottom:16px">
+    <label style="font-size:9px;color:var(--neon);display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700">03 &mdash; Plataforma de Criação</label>
+    <div class="platform-grid" id="platformGrid">
+      <div class="platform-opt selected" onclick="togglePlatform(this,'canva')">
+        <div class="plat-check">&#10003;</div>
+        <div>
+          <div style="font-weight:700;color:inherit">Canva</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px">Templates profissionais</div>
+        </div>
+      </div>
+      <div class="platform-opt" onclick="togglePlatform(this,'paper')">
+        <div class="plat-check"></div>
+        <div>
+          <div style="font-weight:700;color:inherit">Paper.design</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px">Design AI-powered</div>
+        </div>
+      </div>
+      <div class="platform-opt" onclick="togglePlatform(this,'nanobanana')">
+        <div class="plat-check"></div>
+        <div>
+          <div style="font-weight:700;color:inherit">Nano Banana</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px">Criativos automatizados</div>
+        </div>
+      </div>
+      <div class="platform-opt" onclick="togglePlatform(this,'bradok')">
+        <div class="plat-check"></div>
+        <div>
+          <div style="font-weight:700;color:inherit">BRADOK Engine</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px">Geração interna Python/Pillow</div>
+        </div>
+      </div>
+      <div class="platform-opt" onclick="selectAllPlatforms()" id="allPlatformsBtn">
+        <div class="plat-check"></div>
+        <div>
+          <div style="font-weight:700;color:inherit">Todas</div>
+          <div style="font-size:9px;color:var(--t3);margin-top:1px">Uma versão de cada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÃO PRINCIPAL -->
+  <div style="display:flex;gap:12px;margin-bottom:20px">
+    <button class="btn btn-p" onclick="startFlow()" style="flex:1;justify-content:center;padding:16px 28px;font-size:15px">
+      Iniciar Fluxo BRADOK &mdash; 151+ Agentes
+    </button>
+    <button class="btn btn-s" onclick="go('analytics')">Analisar Arte Existente</button>
+  </div>
+
+  <!-- PROGRESSO + LOG -->
+  <div class="card" style="margin-bottom:16px" id="progressCard" >
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="card-t">Progresso dos Agentes</div>
+      <span id="progressPct" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--neon)">0%</span>
+    </div>
+    <div class="gen-progress"><div class="gen-progress-fill" id="genProgressBar"></div></div>
+    <div style="display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap" id="agentStatusRow">
+      <span style="font-size:10px;color:var(--t3)"><span style="color:var(--neon)" id="statusJoice">&#9679;</span> Joice (48)</span>
+      <span style="font-size:10px;color:var(--t3)"><span style="color:var(--purple)" id="statusLucas">&#9679;</span> Lucas (62)</span>
+      <span style="font-size:10px;color:var(--t3)"><span style="color:var(--pink)" id="statusYan">&#9679;</span> Yan (41)</span>
+      <span style="font-size:10px;color:var(--t3)"><span style="color:var(--green)" id="statusAnalytics">&#9679;</span> Analytics</span>
+    </div>
+    <div class="card-t" style="margin-bottom:6px;font-size:12px">Log de Atividade</div>
+    <div class="log" id="aLog"><div class="log-i"><span class="log-t">--:--</span><span class="log-b" style="background:rgba(255,255,255,.05);color:var(--t3)">SYS</span><span class="log-tx">Aguardando copy e configurações...</span></div></div>
+  </div>
+
+  <!-- BLOCO 4: REFERÊNCIAS PESQUISADAS (aparece durante o fluxo) -->
+  <div class="card" id="referencesOutput" style="display:none;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div class="card-t" style="font-size:16px">Referências Pesquisadas pelos Agentes</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">Links, fontes e justificativas de cada referência usada</div>
+      </div>
+      <span style="font-size:10px;color:var(--neon);font-weight:700;padding:4px 10px;border-radius:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15)" id="refCount">0 refs</span>
+    </div>
+    <div id="referencesListArea"></div>
+  </div>
+
+  <!-- BLOCO 5: CRIATIVOS GERADOS (aparece após fluxo) -->
+  <div class="card" id="creativesOutput" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div class="card-t" style="font-size:16px">Criativos Prontos para Download</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">Alta definição 1080px+ &mdash; JPEG, PNG disponíveis &mdash; 3 modelos distintos</div>
+      </div>
+      <button class="btn btn-p btn-sm" onclick="downloadAll()">Baixar Todos</button>
+    </div>
+    <div class="creative-gallery" id="creativeGallery"></div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div class="panel" id="p-pipe">
+  <div class="page-hdr"><div><h2>Pipeline</h2><p>Etapas do fluxo autônomo</p></div></div>
+  <div class="flow-c" id="pFlow">
+    <div class="flow-s" id="s1"><div class="flow-n">01</div><div class="flow-l">INTAKE</div><div class="flow-ss">Copy</div></div>
+    <div class="flow-s" id="s2"><div class="flow-n">02</div><div class="flow-l">JOICE</div><div class="flow-ss">48 agentes</div></div>
+    <div class="flow-s" id="s3"><div class="flow-n">03</div><div class="flow-l">LUCAS</div><div class="flow-ss">62 agentes</div></div>
+    <div class="flow-s" id="s4"><div class="flow-n">04</div><div class="flow-l">APROVAÇÃO</div><div class="flow-ss">Checkpoint</div></div>
+    <div class="flow-s" id="s5"><div class="flow-n">05</div><div class="flow-l">YAN</div><div class="flow-ss">41 agentes</div></div>
+    <div class="flow-s" id="s6"><div class="flow-n">06</div><div class="flow-l">ANALYTICS</div><div class="flow-ss">8 dims</div></div>
+    <div class="flow-s" id="s7"><div class="flow-n">07</div><div class="flow-l">EXPORT</div><div class="flow-ss">PNG</div></div>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="panel" id="p-analytics">
+  <div class="page-hdr"><div><h2>Analytics</h2><p>Métricas de viralização e benchmark de mercado — Upload JPEG/PNG</p></div></div>
+
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-t" style="margin-bottom:14px">Upload de Arte para Análise</div>
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" accept="image/jpeg,image/png" id="fileInput" onchange="handleUpload(event)">
+        <div class="uz-icon">&#128444;</div>
+        <div class="uz-text">Arraste ou clique para subir sua arte</div>
+        <div class="uz-sub">JPEG, PNG — Feed, Stories, Carrossel, Banner</div>
+      </div>
+      <div id="previewArea" style="margin-top:14px;text-align:center;display:none">
+        <img id="previewImg" class="preview-img">
+        <div style="margin-top:12px"><button class="btn btn-p btn-sm" onclick="runAnalytics()">Analisar com 151+ Agentes</button></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-t" style="margin-bottom:14px">Agentes de Análise Ativados</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="agent-row"><span class="agent-nm" style="color:var(--red)">Creative Analyst</span><span class="agent-sp">Líder Analytics</span><span class="agent-sq">Traffic</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--red)">Pedro Sobral</span><span class="agent-sp">Score Instagram/FB</span><span class="agent-sq">Traffic</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--red)">Ad-Midas</span><span class="agent-sp">Potencial criativo ads</span><span class="agent-sq">Traffic</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--red)">Performance Analyst</span><span class="agent-sp">Métricas numéricas</span><span class="agent-sq">Traffic</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--neon)">Avinash Kaushik</span><span class="agent-sp">KPIs e métricas</span><span class="agent-sq">Data</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--neon)">Sean Ellis</span><span class="agent-sp">Growth score</span><span class="agent-sq">Data</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--yellow)">Hormozi Hooks</span><span class="agent-sp">Hook power</span><span class="agent-sq">Hormozi</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--orange)">Alina Wheeler</span><span class="agent-sp">Brand consistency</span><span class="agent-sq">Brand</span></div>
+        <div class="agent-row"><span class="agent-nm" style="color:var(--green)">Movement Chief</span><span class="agent-sp">Viral potential</span><span class="agent-sq">Movement</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card" id="analyticsResults" style="display:none">
+    <div class="card-t" style="margin-bottom:18px">Resultado da Análise BRADOK</div>
+    <div class="grid g2">
+      <div><div id="scoreCards"></div></div>
+      <div>
+        <div style="text-align:center;margin-bottom:18px"><canvas id="radarChart" width="360" height="360"></canvas></div>
+        <div style="text-align:center">
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:2.5px;font-weight:600">Score Geral</div>
+          <div id="overallScore" style="font-size:56px;font-weight:900;margin:10px 0;font-family:'JetBrains Mono',monospace;letter-spacing:-2px"></div>
+          <div id="classification" style="font-size:12px;font-weight:700;padding:6px 20px;border-radius:25px;display:inline-block;letter-spacing:1px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="card-t" style="margin-bottom:14px">Benchmark Comparativo</div>
+      <div id="benchmarks"></div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="card-t" style="margin-bottom:14px">Percentual de Viralização</div>
+      <div id="viralScore" style="text-align:center;padding:24px">
+        <div style="font-size:64px;font-weight:900;font-family:'JetBrains Mono',monospace;letter-spacing:-3px" id="viralPct">0%</div>
+        <div style="font-size:12px;color:var(--t2);margin-top:4px">Probabilidade de viralização orgânica</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="card-t" style="margin-bottom:14px">Top 3 Recomendações</div>
+      <div id="recommendations"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIME JOICE -->
+<div class="panel" id="p-joice">
+  <div class="page-hdr"><div><h2>Time Joice — Pesquisa e Inteligência</h2><p>48 agentes de 8 squads: Brand, Copy (diag), Data, Advisory, Hormozi (hooks), Storytelling (pesq), Movement, C-Level</p></div></div>
+  <div class="team-hdr" style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.08);border-radius:14px"><div class="card-ic" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15)">&#128269;</div><div><h3 style="color:var(--neon)">Sub-agentes Internos Joice</h3><div class="team-cnt">3 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Monitor de Viralização</span><span class="agent-sp">WebSearch conteúdo viral edtech</span><span class="agent-sq">Interno</span></div><div class="agent-row"><span class="agent-nm">Analista de Tendências</span><span class="agent-sp">WebSearch tendências design 2026</span><span class="agent-sq">Interno</span></div><div class="agent-row"><span class="agent-nm">Curador de Referências</span><span class="agent-sp">Freepik, Dribbble, Behance, Pinterest</span><span class="agent-sq">Interno</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.08);border-radius:14px"><div class="card-ic" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.15)">&#127912;</div><div><h3 style="color:var(--orange)">Brand Squad (Estratégia)</h3><div class="team-cnt">12 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Brand Chief</span><span class="agent-sp">Orquestrador — roteia para especialista</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">David Aaker</span><span class="agent-sp">Brand equity, arquitetura</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Kevin Keller</span><span class="agent-sp">Gestão estratégica, CBBE</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Kapferer</span><span class="agent-sp">Prisma de identidade, DNA</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Al Ries</span><span class="agent-sp">Posicionamento, foco</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Byron Sharp</span><span class="agent-sp">Ativos distintivos</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Marty Neumeier</span><span class="agent-sp">Diferenciação radical</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Archetype Consultant</span><span class="agent-sp">Personalidade Jungiana</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Emily Heyward</span><span class="agent-sp">Startup/DTC branding</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Denise Yohn</span><span class="agent-sp">Brand culture</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Donald Miller</span><span class="agent-sp">StoryBrand, messaging</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Miller-Sticky-Brand</span><span class="agent-sp">StoryBrand prática</span><span class="agent-sq">Brand</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.08);border-radius:14px"><div class="card-ic" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15)">&#9997;</div><div><h3 style="color:var(--neon)">Copy Squad (Diagnóstico)</h3><div class="team-cnt">2 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Copy Chief (Cyrus)</span><span class="agent-sp">Avalia awareness, roteia</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Eugene Schwartz</span><span class="agent-sp">Níveis de consciência</span><span class="agent-sq">Copy</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.08);border-radius:14px"><div class="card-ic" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.15)">&#128200;</div><div><h3 style="color:var(--green)">Data Squad + Advisory + Outros</h3><div class="team-cnt">~31 agentes</div></div></div>
+  <div style="padding:0 14px"><div class="agent-row"><span class="agent-nm">Data Chief</span><span class="agent-sp">Estratégia data-driven</span><span class="agent-sq">Data</span></div><div class="agent-row"><span class="agent-nm">Avinash Kaushik</span><span class="agent-sp">Web analytics</span><span class="agent-sq">Data</span></div><div class="agent-row"><span class="agent-nm">Sean Ellis</span><span class="agent-sp">Growth hacking</span><span class="agent-sq">Data</span></div><div class="agent-row"><span class="agent-nm">Board Chair</span><span class="agent-sp">Decisões estratégicas</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Ray Dalio</span><span class="agent-sp">Princípios, modelos mentais</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Simon Sinek</span><span class="agent-sp">Start with Why</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Hormozi Hooks</span><span class="agent-sp">Gerar 3-5 hooks</span><span class="agent-sq">Hormozi</span></div><div class="agent-row"><span class="agent-nm">Hormozi Offers</span><span class="agent-sp">Grand Slam Offer</span><span class="agent-sq">Hormozi</span></div><div class="agent-row"><span class="agent-nm">CMO Architect</span><span class="agent-sp">Direção de marketing</span><span class="agent-sq">C-Level</span></div><div class="agent-row"><span class="agent-nm">Movement Chief</span><span class="agent-sp">Construção de movimento</span><span class="agent-sq">Movement</span></div><div class="agent-row" style="color:var(--t3);font-style:italic"><span>+ Story Chief, Joseph Campbell, Fenomenólogo, Naval Ravikant, Charlie Munger, Wes Kao, Peter Fader...</span></div></div>
+</div>
+
+<!-- TIME LUCAS -->
+<div class="panel" id="p-lucas">
+  <div class="page-hdr"><div><h2>Time Lucas — Criação e Execução</h2><p>62 agentes de 6 squads: Design, Copy (redação), Storytelling (narrativa), Hormozi (copy), Brand (visual), Claude Code</p></div></div>
+  <div class="team-hdr" style="background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.08);border-radius:14px"><div class="card-ic" style="background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.15)">&#127752;</div><div><h3 style="color:var(--purple)">Design Squad (completo)</h3><div class="team-cnt">8 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Design Chief</span><span class="agent-sp">Orquestrador de design</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">Visual Generator</span><span class="agent-sp">Assets visuais, prompts IA</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">Brad Frost</span><span class="agent-sp">Atomic Design</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">Dan Mall</span><span class="agent-sp">Design systems at scale</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">Design System Architect</span><span class="agent-sp">Tokens, componentes</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">UI Engineer</span><span class="agent-sp">Implementação visual</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">UX Designer</span><span class="agent-sp">Fluxo de interação</span><span class="agent-sq">Design</span></div><div class="agent-row"><span class="agent-nm">Dave Malouf</span><span class="agent-sp">DesignOps</span><span class="agent-sq">Design</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.08);border-radius:14px"><div class="card-ic" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15)">&#9997;</div><div><h3 style="color:var(--neon)">Copy Squad (Redação)</h3><div class="team-cnt">14 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Gary Halbert</span><span class="agent-sp">Copy emocional</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">David Ogilvy</span><span class="agent-sp">Copy premium</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Dan Kennedy</span><span class="agent-sp">No-BS marketing</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Russell Brunson</span><span class="agent-sp">Funnels, scripts</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Joe Sugarman</span><span class="agent-sp">Triggers psicológicos</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Stefan Georgi</span><span class="agent-sp">VSL, RMBC</span><span class="agent-sq">Copy</span></div><div class="agent-row" style="color:var(--t3);font-style:italic"><span>+ Frank Kern, Todd Brown, Jon Benson, Dan Koe, John Carlton, Robert Collier, Jim Rutz, Gary Bencivenga</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.08);border-radius:14px"><div class="card-ic" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.15)">&#128218;</div><div><h3 style="color:var(--green)">Storytelling (Narrativa) + Outros</h3><div class="team-cnt">~40 agentes</div></div></div>
+  <div style="padding:0 14px"><div class="agent-row"><span class="agent-nm">Park Howell</span><span class="agent-sp">Framework ABT</span><span class="agent-sq">Story</span></div><div class="agent-row"><span class="agent-nm">Kindra Hall</span><span class="agent-sp">Sales stories</span><span class="agent-sq">Story</span></div><div class="agent-row"><span class="agent-nm">Nancy Duarte</span><span class="agent-sp">Data storytelling</span><span class="agent-sq">Story</span></div><div class="agent-row"><span class="agent-nm">Alina Wheeler</span><span class="agent-sp">Identidade visual</span><span class="agent-sq">Brand</span></div><div class="agent-row"><span class="agent-nm">Hormozi Copy</span><span class="agent-sp">Copy estilo Hormozi</span><span class="agent-sq">Hormozi</span></div><div class="agent-row"><span class="agent-nm">Claude Mastery Chief</span><span class="agent-sp">Automação BRADOK</span><span class="agent-sq">Claude</span></div><div class="agent-row"><span class="agent-nm">Skill Craftsman</span><span class="agent-sp">Templates, skills</span><span class="agent-sq">Claude</span></div><div class="agent-row" style="color:var(--t3);font-style:italic"><span>+ Oren Klaff, Dan Harmon, Blake Snyder, Vision Chief, MCP Integrator, Hormozi Content/Launch/Closer...</span></div></div>
+</div>
+
+<!-- TIME YAN -->
+<div class="panel" id="p-yan">
+  <div class="page-hdr"><div><h2>Time Yan — Refino Premium</h2><p>41 agentes de 7 squads: Advisory, Copy (refino), Hormozi (otimização), Movement, Cybersecurity, C-Level, Brand (QA)</p></div></div>
+  <div class="team-hdr" style="background:rgba(244,114,182,.05);border:1px solid rgba(244,114,182,.08);border-radius:14px"><div class="card-ic" style="background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.15)">&#10024;</div><div><h3 style="color:var(--pink)">Yan — Refinador Premium (interno)</h3><div class="team-cnt">Checklist 12 pontos</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px;font-size:11px;color:var(--t2);line-height:1.8"><div>1. Hierarquia tipográfica (Coolvetica 800 + Raleway 300)</div><div>2. Espaçamento harmônico (golden ratio)</div><div>3. CTA destacado com contraste máximo</div><div>4. Paleta de cores identidade Tutory</div><div>5. Contraste WCAG AA legibilidade</div><div>6. Respiro visual generoso</div><div>7. Alinhamento grid 8px</div><div>8. Microdetalhes premium (sombras, gradientes)</div><div>9. Ativos distintivos Tutory presentes</div><div>10. Hook visível em 0.5s</div><div>11. Score Analytics mínimo 75/100</div><div>12. Benchmark vs Hotmart/Kiwify/Eduzz aprovado</div></div>
+
+  <div class="team-hdr" style="background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.08);border-radius:14px"><div class="card-ic" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.15)">&#128161;</div><div><h3 style="color:var(--orange)">Advisory Board (Revisão)</h3><div class="team-cnt">6 agentes</div></div></div>
+  <div style="margin-bottom:18px;padding:0 14px"><div class="agent-row"><span class="agent-nm">Peter Thiel</span><span class="agent-sp">"É 10x melhor?"</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Reid Hoffman</span><span class="agent-sp">Potencial viral, network</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Brene Brown</span><span class="agent-sp">Autenticidade emocional</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Derek Sivers</span><span class="agent-sp">"Simples o suficiente?"</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Yvon Chouinard</span><span class="agent-sp">Propósito, autenticidade</span><span class="agent-sq">Advisory</span></div><div class="agent-row"><span class="agent-nm">Patrick Lencioni</span><span class="agent-sp">Coerência interna</span><span class="agent-sq">Advisory</span></div></div>
+
+  <div class="team-hdr" style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.08);border-radius:14px"><div class="card-ic" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.15)">&#128274;</div><div><h3 style="color:var(--neon)">Copy Refino + Hormozi + Movement + Cyber</h3><div class="team-cnt">~35 agentes</div></div></div>
+  <div style="padding:0 14px"><div class="agent-row"><span class="agent-nm">David Deutsch</span><span class="agent-sp">Persuasão sofisticada</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Clayton Makepeace</span><span class="agent-sp">Power bullets</span><span class="agent-sq">Copy</span></div><div class="agent-row"><span class="agent-nm">Hormozi Retention</span><span class="agent-sp">A peça retém atenção?</span><span class="agent-sq">Hormozi</span></div><div class="agent-row"><span class="agent-nm">Hormozi Scale</span><span class="agent-sp">A peça escala?</span><span class="agent-sq">Hormozi</span></div><div class="agent-row"><span class="agent-nm">Movement Architect</span><span class="agent-sp">Constrói movimento?</span><span class="agent-sq">Movement</span></div><div class="agent-row"><span class="agent-nm">Identitário</span><span class="agent-sp">Cria pertencimento?</span><span class="agent-sq">Movement</span></div><div class="agent-row"><span class="agent-nm">Cyber Chief</span><span class="agent-sp">Compliance visual</span><span class="agent-sq">Cyber</span></div><div class="agent-row" style="color:var(--t3);font-style:italic"><span>+ Parris Lampropoulos, Ry Schwartz, Ben Settle, Andre Chaperon, COO, CIO, Hormozi Pricing/Ads/Models, Manifestador...</span></div></div>
+</div>
+
+<!-- BRAND ASSETS -->
+<div class="panel" id="p-brand-assets">
+  <div class="page-hdr"><div><h2>Brand Assets</h2><p>Identidade visual Tutory</p></div></div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Paleta</div>
+      <div style="display:flex;gap:8px">
+        <div style="width:55px;height:55px;background:#020617;border-radius:12px;border:1px solid rgba(255,255,255,.06)"></div>
+        <div style="width:55px;height:55px;background:#00d4ff;border-radius:12px;box-shadow:0 0 20px rgba(0,212,255,.3)"></div>
+        <div style="width:55px;height:55px;background:#a855f7;border-radius:12px;box-shadow:0 0 20px rgba(168,85,247,.3)"></div>
+        <div style="width:55px;height:55px;background:#06b6d4;border-radius:12px;box-shadow:0 0 20px rgba(6,182,212,.3)"></div>
+        <div style="width:55px;height:55px;background:#f0f9ff;border-radius:12px;border:1px solid rgba(255,255,255,.1)"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Tipografia</div>
+      <div style="font-size:26px;font-weight:900;letter-spacing:-1px">Coolvetica <span style="font-size:11px;color:var(--t3);font-weight:400;letter-spacing:0">Títulos</span></div>
+      <div style="font-size:17px;font-weight:300;margin-top:4px">Raleway Light <span style="font-size:11px;color:var(--t3)">Subtítulos</span></div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Formato Padrão</div>
+      <div style="font-size:24px;font-weight:900;color:var(--neon);font-family:'JetBrains Mono',monospace;letter-spacing:-1px;text-shadow:0 0 30px rgba(0,212,255,.3)">1080 x 1350px</div>
+      <div style="font-size:11px;color:var(--t2);margin-top:4px">Feed Instagram vertical</div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Benchmarks</div>
+      <div class="chips"><span class="chip">Hotmart</span><span class="chip">Kiwify</span><span class="chip">Eduzz</span><span class="chip">Apple</span><span class="chip">Notion</span><span class="chip">Stripe</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIG -->
+<div class="panel" id="p-cfg">
+  <div class="page-hdr"><div><h2>Configurações</h2></div></div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Squads Integrados</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7">12 squads xquads: Brand, Copy, Design, Storytelling, Traffic, Hormozi, Advisory, C-Level, Data, Movement, Cybersecurity, Claude Code Mastery</div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Integrações</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--t2)">
+        <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--orange)"></span>Canva MCP — Reconectar por sessão</div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--neon)"></span>Paper.design — Desktop app</div>
+        <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green)"></span>xquads — 12 squads (377 arquivos)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ===== FLOATING NUMBERS GENERATOR =====
+(function initFloatingNumbers(){
+  const container=document.getElementById('floatingNumbers');
+  const symbols=['0','1','∑','∞','π','%','#','Δ','λ','∂','≈','√','×','÷','±','∫','≤','≥','⟨','⟩','α','β','θ','σ','μ','Ω','0x3F','f(x)','ROI','CTR','CPC','CVR','151+','12','48','62','41','97%','∮','∇','⊕'];
+  const count=35;
+  for(let i=0;i<count;i++){
+    const span=document.createElement('span');
+    span.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    span.style.left=Math.random()*100+'%';
+    span.style.fontSize=(10+Math.random()*16)+'px';
+    span.style.animationDuration=(15+Math.random()*25)+'s';
+    span.style.animationDelay=(-Math.random()*30)+'s';
+    span.style.color=`rgba(0,212,255,${0.02+Math.random()*0.03})`;
+    container.appendChild(span);
+  }
+})();
+
+// ===== NAVIGATION =====
+function go(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const p=document.getElementById('p-'+id);
+  if(p)p.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');
+  });
+}
+
+// ===== LOG =====
+function addLog(b,c,t){
+  const l=document.getElementById('aLog');
+  const now=new Date();
+  const tm=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  const i=document.createElement('div');i.className='log-i';
+  i.innerHTML=`<span class="log-t">${tm}</span><span class="log-b" style="background:${c}">${b}</span><span class="log-tx">${t}</span>`;
+  l.prepend(i);
+}
+
+// ===== REFERENCE IMAGE UPLOAD =====
+let refImages=[];
+function handleRefUpload(e){
+  const files=Array.from(e.target.files);
+  files.forEach(f=>{
+    const r=new FileReader();
+    r.onload=function(ev){
+      refImages.push({name:f.name,data:ev.target.result});
+      const thumb=document.createElement('img');
+      thumb.className='ref-thumb';thumb.src=ev.target.result;thumb.title=f.name;
+      document.getElementById('refThumbs').appendChild(thumb);
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+// ===== PLATFORM SELECTION =====
+let selectedPlatforms=['canva'];
+function togglePlatform(el,platform){
+  if(platform){
+    el.classList.toggle('selected');
+    const check=el.querySelector('.plat-check');
+    if(el.classList.contains('selected')){
+      check.innerHTML='&#10003;';
+      if(!selectedPlatforms.includes(platform))selectedPlatforms.push(platform);
+    }else{
+      check.innerHTML='';
+      selectedPlatforms=selectedPlatforms.filter(p=>p!==platform);
+    }
+  }
+}
+function selectAllPlatforms(){
+  const btn=document.getElementById('allPlatformsBtn');
+  const opts=document.querySelectorAll('.platform-opt:not(#allPlatformsBtn)');
+  const allSelected=btn.classList.contains('selected');
+  opts.forEach(o=>{
+    const plat=o.getAttribute('onclick').match(/'(\w+)'/)[1];
+    if(allSelected){
+      o.classList.remove('selected');
+      o.querySelector('.plat-check').innerHTML='';
+    }else{
+      o.classList.add('selected');
+      o.querySelector('.plat-check').innerHTML='&#10003;';
+    }
+  });
+  if(allSelected){
+    btn.classList.remove('selected');btn.querySelector('.plat-check').innerHTML='';
+    selectedPlatforms=[];
+  }else{
+    btn.classList.add('selected');btn.querySelector('.plat-check').innerHTML='&#10003;';
+    selectedPlatforms=['canva','paper','nanobanana','bradok'];
+  }
+}
+
+// ===== PROGRESS BAR =====
+function setProgress(pct){
+  document.getElementById('genProgressBar').style.width=pct+'%';
+  document.getElementById('progressPct').textContent=pct+'%';
+}
+function setStatus(id,state){
+  const el=document.getElementById(id);
+  if(state==='working'){el.className='agent-working';el.style.color='var(--neon)'}
+  else if(state==='done'){el.className='';el.style.color='var(--green)'}
+  else{el.className='';el.style.color='var(--t3)'}
+}
+
+// ===== REFERENCES DATABASE =====
+function getReferences(copyText){
+  const refs=[
+    // EDTECH + SaaS Premium
+    {cat:'Edtech & SaaS Premium',title:'Coursera — Hero Section Pattern',url:'https://www.coursera.org',reason:'Layout hero com gradiente escuro + tipografia bold. Referência de hierarquia visual para destaque do headline principal. Modelo de CTA com contraste máximo.',agent:'Alina Wheeler (Brand)'},
+    {cat:'Edtech & SaaS Premium',title:'Notion — Glass Cards + Minimalismo',url:'https://www.notion.so',reason:'Glassmorphism elegante com espaço negativo generoso. Referência para cards com blur + micro-interações. Paleta neutra com acentos sutis.',agent:'Brad Frost (Design)'},
+    {cat:'Edtech & SaaS Premium',title:'Linear — Dark UI Premium',url:'https://linear.app',reason:'Estilo dark mode tech com gradientes azul/roxo. Tipografia Inter/System. Referência de profissionalismo e modernidade para interfaces escuras.',agent:'Design Chief'},
+    {cat:'Edtech & SaaS Premium',title:'Stripe — Gradientes & Composição',url:'https://stripe.com',reason:'Referência mundial em gradientes multicolor sofisticados. Composição assimétrica premium. Uso de depth e layers para criar profundidade visual.',agent:'Dan Mall (Design)'},
+    // Infoprodutos BR
+    {cat:'Infoprodutos Brasil',title:'Hotmart — Cards de Conversão',url:'https://hotmart.com',reason:'Padrão de card de venda com badge de desconto, rating social proof e CTA urgente. Referência direta do mercado educacional brasileiro.',agent:'Pedro Sobral (Traffic)'},
+    {cat:'Infoprodutos Brasil',title:'Kiwify — Layout Direto ao Ponto',url:'https://kiwify.com.br',reason:'Abordagem minimalista brasileira. Copy curta + benefícios em bullets + CTA grande. Referência de conversão rápida no mercado de cursos.',agent:'Hormozi Hooks'},
+    {cat:'Infoprodutos Brasil',title:'Eduzz — Social Proof Heavy',url:'https://eduzz.com',reason:'Uso intenso de números (alunos, faturamento, avaliações). Referência para incorporar prova social quantificada nos criativos.',agent:'Sean Ellis (Data)'},
+    {cat:'Infoprodutos Brasil',title:'G4 Educação — Premium BR',url:'https://g4educacao.com',reason:'Posicionamento premium no mercado BR. Fotografia profissional + tipografia sólida + paleta sofisticada. Referência de como elevar o padrão visual de infoprodutos para nível executivo.',agent:'CMO Architect (C-Level)'},
+    // Global Premium
+    {cat:'Global Premium',title:'Apple — Tipografia & Espaço Negativo',url:'https://apple.com',reason:'Referência absoluta em uso de espaço negativo, tipografia SF Pro com pesos extremos e fotografia product-centric. Cada pixel é intencional.',agent:'Byron Sharp (Brand)'},
+    {cat:'Global Premium',title:'Dribbble — Tendências Visuais 2026',url:'https://dribbble.com/tags/marketing',reason:'Curadoria das tendências visuais mais recentes: bento grid, neobrutalism, 3D elements, aurora gradients. Referências de layout e composição.',agent:'Curador de Referências'},
+    {cat:'Global Premium',title:'Behance — Case Studies Design',url:'https://behance.net/galleries/graphic-design',reason:'Projetos completos de branding e social media com processo criativo documentado. Referência de qualidade e acabamento profissional.',agent:'Analista de Tendências'},
+    // Tendências 2026
+    {cat:'Tendências 2026',title:'Awwwards — Sites Premiados',url:'https://awwwards.com',reason:'Sites premiados com interações avançadas. Referência para efeitos glass, parallax, micro-animações que podem ser traduzidas para estáticos.',agent:'Visual Generator (Design)'},
+    {cat:'Tendências 2026',title:'Pinterest — Mood Board Edtech',url:'https://pinterest.com/search/pins/?q=edtech+social+media+design',reason:'Curadoria visual orgânica de social media para educação. Detecta padrões visuais recorrentes: cores, composições, estilos tipográficos.',agent:'Monitor de Viralização'},
+  ];
+  return refs;
+}
+
+function renderReferences(refs){
+  const area=document.getElementById('referencesListArea');
+  document.getElementById('refCount').textContent=refs.length+' referências';
+  let currentCat='';let html='';
+  refs.forEach(ref=>{
+    if(ref.cat!==currentCat){currentCat=ref.cat;html+=`<div class="ref-category">${ref.cat}</div>`}
+    html+=`<div class="ref-item">
+      <div class="ref-icon">&#128279;</div>
+      <div class="ref-body">
+        <div class="ref-title">${ref.title}</div>
+        <a href="${ref.url}" target="_blank" class="ref-link">${ref.url}</a>
+        <div class="ref-reason">${ref.reason}</div>
+        <span class="ref-agent">Agente: ${ref.agent}</span>
+      </div>
+    </div>`;
+  });
+  area.innerHTML=html;
+  document.getElementById('referencesOutput').style.display='block';
+}
+
+// ===== PROFESSIONAL CANVAS RENDERER =====
+// Utility: rounded rect
+function roundRect(ctx,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+// Utility: multi-stop gradient background
+function drawPremiumBg(ctx,w,h,palette){
+  const bg=ctx.createLinearGradient(0,0,w*0.3,h);
+  palette.bg.forEach((s,i)=>bg.addColorStop(i/(palette.bg.length-1),s));
+  ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  // Radial glows
+  palette.glows.forEach(g=>{
+    const rg=ctx.createRadialGradient(g.x*w,g.y*h,0,g.x*w,g.y*h,g.r*Math.max(w,h));
+    rg.addColorStop(0,g.c+'18');rg.addColorStop(0.5,g.c+'08');rg.addColorStop(1,'transparent');
+    ctx.fillStyle=rg;ctx.fillRect(0,0,w,h);
+  });
+  // Noise grain
+  ctx.globalAlpha=0.015;
+  for(let i=0;i<2000;i++){
+    ctx.fillStyle=Math.random()>0.5?'#fff':'#000';
+    ctx.fillRect(Math.random()*w,Math.random()*h,1,1);
+  }
+  ctx.globalAlpha=1;
+}
+
+// Utility: glass card
+function drawGlassCard(ctx,x,y,w,h,r,opacity){
+  ctx.save();
+  roundRect(ctx,x,y,w,h,r);ctx.clip();
+  ctx.fillStyle=`rgba(255,255,255,${opacity||0.04})`;ctx.fillRect(x,y,w,h);
+  // Inner gradient
+  const ig=ctx.createLinearGradient(x,y,x,y+h);
+  ig.addColorStop(0,'rgba(255,255,255,0.06)');ig.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=ig;ctx.fillRect(x,y,w,h);
+  ctx.restore();
+  // Border
+  roundRect(ctx,x,y,w,h,r);ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.stroke();
+  // Top highlight
+  ctx.beginPath();ctx.moveTo(x+r,y+0.5);ctx.lineTo(x+w-r,y+0.5);ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1;ctx.stroke();
+}
+
+// Utility: gradient text
+function drawGradientText(ctx,text,x,y,font,colors,align){
+  ctx.save();ctx.font=font;ctx.textAlign=align||'center';ctx.textBaseline='middle';
+  const m=ctx.measureText(text);
+  const gx=align==='left'?x:align==='right'?x-m.width:x-m.width/2;
+  const g=ctx.createLinearGradient(gx,0,gx+m.width,0);
+  colors.forEach((c,i)=>g.addColorStop(i/(colors.length-1),c));
+  ctx.fillStyle=g;ctx.fillText(text,x,y);
+  ctx.restore();
+}
+
+// Utility: neon glow button
+function drawNeonButton(ctx,x,y,w,h,text,color1,color2){
+  // Glow
+  ctx.save();ctx.shadowColor=color1;ctx.shadowBlur=20;
+  roundRect(ctx,x,y,w,h,h/2);
+  const g=ctx.createLinearGradient(x,y,x+w,y);g.addColorStop(0,color1);g.addColorStop(1,color2);
+  ctx.fillStyle=g;ctx.fill();ctx.restore();
+  // Text
+  ctx.fillStyle='#fff';ctx.font='bold '+(h*0.38)+'px Inter';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(text,x+w/2,y+h/2+1);
+}
+
+// ===== MODEL 1: Tendência + Marca (Glassmorphism Premium) =====
+function drawModel1(canvasId, copyText){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+  const copy=copyText||'Transforme sua carreira com mentorias exclusivas';
+
+  drawPremiumBg(ctx,w,h,{
+    bg:['#020617','#0a1628','#0c1e3a','#081430'],
+    glows:[{x:.2,y:.8,r:.5,c:'#00d4ff'},{x:.8,y:.2,r:.4,c:'#a855f7'},{x:.5,y:.5,r:.3,c:'#0ea5e9'}]
+  });
+
+  // Grid lines
+  ctx.strokeStyle='rgba(0,212,255,0.03)';ctx.lineWidth=1;
+  for(let i=0;i<w;i+=w/8){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,h);ctx.stroke()}
+  for(let i=0;i<h;i+=h/10){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(w,i);ctx.stroke()}
+
+  // Top badge
+  const badgeW=w*0.35,badgeH=h*0.028;
+  roundRect(ctx,w/2-badgeW/2,h*0.06,badgeW,badgeH,badgeH/2);
+  ctx.fillStyle='rgba(0,212,255,0.1)';ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.2)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#00d4ff';ctx.font='bold '+(h*0.013)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('+300K ALUNOS TRANSFORMADOS',w/2,h*0.06+badgeH/2+1);
+
+  // Logo
+  drawGradientText(ctx,'TUTORY',w/2,h*0.13,'900 '+(h*0.05)+'px Inter',['#00d4ff','#a855f7']);
+
+  // Main headline — word wrap
+  ctx.fillStyle='#ffffff';ctx.textAlign='center';
+  const words=copy.split(' ');let lines=[];let line='';
+  ctx.font='800 '+(h*0.032)+'px Inter';
+  words.forEach(word=>{
+    const test=line+word+' ';
+    if(ctx.measureText(test).width>w*0.8&&line!==''){lines.push(line.trim());line=word+' '}
+    else line=test;
+  });
+  lines.push(line.trim());
+  const lineH=h*0.042;const startY=h*0.22;
+  lines.forEach((l,i)=>{ctx.fillText(l,w/2,startY+i*lineH)});
+
+  // Glass cards — 3 benefit cards
+  const benefits=['500+ Mentores\nEspecialistas','Certificado\nReconhecido','Comunidade\nExclusiva'];
+  const icons=['&#9733;','&#9733;','&#9733;'];
+  const cardW=w*0.27,cardH=h*0.13,cardGap=(w-3*cardW-2*w*0.06)/2;
+  const cardY=h*0.38;
+  benefits.forEach((b,i)=>{
+    const cx=w*0.06+i*(cardW+w*0.04);
+    drawGlassCard(ctx,cx,cardY,cardW,cardH,14,0.04);
+    // Icon circle
+    const icR=h*0.018;
+    ctx.beginPath();ctx.arc(cx+cardW/2,cardY+h*0.035,icR,0,Math.PI*2);
+    const icG=ctx.createLinearGradient(cx+cardW/2-icR,cardY,cx+cardW/2+icR,cardY+icR*2);
+    icG.addColorStop(0,'#00d4ff');icG.addColorStop(1,'#a855f7');
+    ctx.fillStyle=icG;ctx.fill();
+    // Text
+    const bLines=b.split('\n');
+    ctx.fillStyle='#e2e8f0';ctx.font='700 '+(h*0.014)+'px Inter';ctx.textAlign='center';
+    bLines.forEach((bl,j)=>{ctx.fillText(bl,cx+cardW/2,cardY+h*0.065+j*(h*0.018))});
+  });
+
+  // Stats row
+  const statsY=h*0.56;
+  drawGlassCard(ctx,w*0.06,statsY,w*0.88,h*0.07,14,0.03);
+  const stats=[{n:'97%',l:'Satisfação'},{n:'48h',l:'Resposta'},{n:'4.9★',l:'Avaliação'},{n:'12x',l:'s/ juros'}];
+  stats.forEach((s,i)=>{
+    const sx=w*0.06+w*0.04+i*(w*0.88/4);
+    ctx.fillStyle='#00d4ff';ctx.font='800 '+(h*0.022)+'px Inter';ctx.textAlign='center';
+    ctx.fillText(s.n,sx+w*0.08,statsY+h*0.025);
+    ctx.fillStyle='#64748b';ctx.font='500 '+(h*0.011)+'px Inter';
+    ctx.fillText(s.l,sx+w*0.08,statsY+h*0.048);
+  });
+
+  // CTA Button
+  drawNeonButton(ctx,w*0.15,h*0.68,w*0.7,h*0.055,'QUERO COMEÇAR AGORA','#00d4ff','#0ea5e9');
+
+  // Secondary text
+  ctx.fillStyle='#64748b';ctx.font='500 '+(h*0.012)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('Vagas limitadas — Acesso imediato após a matrícula',w/2,h*0.77);
+
+  // Testimonial glass card
+  drawGlassCard(ctx,w*0.1,h*0.81,w*0.8,h*0.1,14,0.03);
+  ctx.fillStyle='#94a3b8';ctx.font='italic '+(h*0.012)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('"A melhor decisão da minha carreira. Em 3 meses',w/2,h*0.845);
+  ctx.fillText('consegui minha primeira promoção."',w/2,h*0.862);
+  ctx.fillStyle='#e2e8f0';ctx.font='700 '+(h*0.011)+'px Inter';
+  ctx.fillText('— Maria S., Desenvolvedora Senior',w/2,h*0.888);
+
+  // Bottom logo
+  ctx.globalAlpha=0.06;ctx.fillStyle='#00d4ff';ctx.font='900 '+(h*0.04)+'px Inter';
+  ctx.fillText('TUTORY',w/2,h*0.97);ctx.globalAlpha=1;
+}
+
+// ===== MODEL 2: Hormozi (Alta Conversão — Bold + Contrarian) =====
+function drawModel2(canvasId, copyText){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+
+  drawPremiumBg(ctx,w,h,{
+    bg:['#0f0506','#1a0a0c','#250e10','#1a0808'],
+    glows:[{x:.3,y:.3,r:.5,c:'#f59e0b'},{x:.7,y:.7,r:.4,c:'#ef4444'},{x:.5,y:.1,r:.3,c:'#f97316'}]
+  });
+
+  // Diagonal accent
+  ctx.save();ctx.globalAlpha=0.04;
+  ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.moveTo(0,h*0.3);ctx.lineTo(w,h*0.15);ctx.lineTo(w,h*0.25);ctx.lineTo(0,h*0.4);ctx.fill();
+  ctx.globalAlpha=1;ctx.restore();
+
+  // Ghost number background
+  ctx.fillStyle='rgba(245,158,11,0.03)';ctx.font='900 '+(h*0.3)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('$0',w*0.5,h*0.35);
+
+  // Top label
+  roundRect(ctx,w*0.06,h*0.04,w*0.35,h*0.03,h*0.015);
+  ctx.fillStyle='rgba(245,158,11,0.12)';ctx.fill();ctx.strokeStyle='rgba(245,158,11,0.25)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#f59e0b';ctx.font='bold '+(h*0.012)+'px Inter';ctx.textAlign='left';
+  ctx.fillText('OFERTA EXCLUSIVA',w*0.09,h*0.04+h*0.017);
+
+  // Strikethrough price
+  ctx.fillStyle='#ef4444';ctx.font='700 '+(h*0.025)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('De R$ 2.997',w/2,h*0.12);
+  ctx.strokeStyle='#ef4444';ctx.lineWidth=2;
+  const tw=ctx.measureText('De R$ 2.997').width;
+  ctx.beginPath();ctx.moveTo(w/2-tw/2-5,h*0.12);ctx.lineTo(w/2+tw/2+5,h*0.12);ctx.stroke();
+
+  // Main price
+  drawGradientText(ctx,'R$ 497',w/2,h*0.19,'900 '+(h*0.065)+'px Inter',['#f59e0b','#fbbf24']);
+  ctx.fillStyle='#94a3b8';ctx.font='500 '+(h*0.014)+'px Inter';
+  ctx.fillText('ou 12x de R$ 49,70 sem juros',w/2,h*0.23);
+
+  // Contrarian hook
+  ctx.fillStyle='#ffffff';ctx.font='800 '+(h*0.028)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('PARE DE PERDER TEMPO',w/2,h*0.31);
+  ctx.fillText('COM CURSOS QUE NÃO',w/2,h*0.35);
+  ctx.fillText('ENTREGAM RESULTADO',w/2,h*0.39);
+
+  // Bullet benefits with checkmarks
+  const bullets=['Acesso vitalício a +500 mentorias','Suporte direto com especialistas 24/7','Garantia incondicional de 30 dias','Comunidade privada com +300K alunos','Certificado reconhecido pelo mercado'];
+  const bulletY=h*0.45;
+  bullets.forEach((b,i)=>{
+    const by=bulletY+i*(h*0.045);
+    // Check circle
+    ctx.beginPath();ctx.arc(w*0.12,by,h*0.012,0,Math.PI*2);
+    ctx.fillStyle='rgba(34,197,94,0.15)';ctx.fill();
+    ctx.fillStyle='#22c55e';ctx.font='bold '+(h*0.014)+'px Inter';ctx.textAlign='center';
+    ctx.fillText('✓',w*0.12,by+1);
+    // Text
+    ctx.fillStyle='#e2e8f0';ctx.font='500 '+(h*0.015)+'px Inter';ctx.textAlign='left';
+    ctx.fillText(b,w*0.17,by+1);
+  });
+
+  // Urgency bar
+  roundRect(ctx,w*0.06,h*0.7,w*0.88,h*0.045,10);
+  ctx.fillStyle='rgba(239,68,68,0.1)';ctx.fill();ctx.strokeStyle='rgba(239,68,68,0.2)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#ef4444';ctx.font='bold '+(h*0.014)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('⚡ APENAS 47 VAGAS RESTANTES — OFERTA EXPIRA EM 23:59:47',w/2,h*0.7+h*0.025);
+
+  // CTA
+  drawNeonButton(ctx,w*0.08,h*0.78,w*0.84,h*0.06,'GARANTIR MINHA VAGA AGORA','#f59e0b','#f97316');
+
+  // Trust badges
+  ctx.fillStyle='#64748b';ctx.font='500 '+(h*0.01)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('🔒 Pagamento 100% seguro  •  Garantia de 30 dias  •  Acesso imediato',w/2,h*0.88);
+
+  // Social proof counter
+  drawGlassCard(ctx,w*0.15,h*0.91,w*0.7,h*0.05,12,0.04);
+  ctx.fillStyle='#f59e0b';ctx.font='800 '+(h*0.018)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('312 pessoas',w/2,h*0.93);
+  ctx.fillStyle='#94a3b8';ctx.font='400 '+(h*0.011)+'px Inter';
+  ctx.fillText('compraram nas últimas 24 horas',w/2,h*0.951);
+}
+
+// ===== MODEL 3: Storytelling (Narrativo — Timeline + Emotion) =====
+function drawModel3(canvasId, copyText){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');const w=c.width,h=c.height;
+
+  drawPremiumBg(ctx,w,h,{
+    bg:['#020612','#06132a','#0a1a3a','#04102a'],
+    glows:[{x:.15,y:.5,r:.5,c:'#22c55e'},{x:.85,y:.3,r:.4,c:'#0ea5e9'},{x:.5,y:.9,r:.3,c:'#06b6d4'}]
+  });
+
+  // Chapter label
+  roundRect(ctx,w*0.06,h*0.04,w*0.22,h*0.025,h*0.012);
+  ctx.fillStyle='rgba(34,197,94,0.1)';ctx.fill();ctx.strokeStyle='rgba(34,197,94,0.2)';ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#22c55e';ctx.font='bold '+(h*0.01)+'px Inter';ctx.textAlign='left';
+  ctx.fillText('HISTÓRIA REAL',w*0.085,h*0.04+h*0.014);
+
+  // Opening quote
+  ctx.fillStyle='rgba(34,197,94,0.1)';ctx.font='900 '+(h*0.12)+'px Georgia';ctx.textAlign='left';
+  ctx.fillText('"',w*0.04,h*0.14);
+
+  // Story text — ABT narrative
+  ctx.fillStyle='#e2e8f0';ctx.font='300 '+(h*0.018)+'px Inter';ctx.textAlign='left';
+  const storyLines=[
+    'Eu era professor de escola pública.',
+    'Ganhava R$ 2.800 por mês.',
+    'Trabalhava 12 horas por dia.',
+    '',
+    'Até que descobri um método',
+    'que mudou tudo...'
+  ];
+  storyLines.forEach((l,i)=>{
+    if(i===4) ctx.font='600 '+(h*0.018)+'px Inter';
+    if(i===5){ctx.fillStyle='#22c55e';ctx.font='700 '+(h*0.02)+'px Inter'}
+    ctx.fillText(l,w*0.1,h*0.13+i*(h*0.032));
+  });
+
+  // Timeline
+  const timeY=h*0.4;const timeH=h*0.3;
+  // Vertical line
+  ctx.strokeStyle='rgba(34,197,94,0.15)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(w*0.12,timeY);ctx.lineTo(w*0.12,timeY+timeH);ctx.stroke();
+
+  const timeline=[
+    {t:'Mês 1',d:'Acessou a plataforma\ne começou os estudos',color:'#0ea5e9'},
+    {t:'Mês 3',d:'Primeira mentoria\nmudou sua visão',color:'#a855f7'},
+    {t:'Mês 6',d:'Promoção no trabalho\n+147% de salário',color:'#22c55e'},
+    {t:'Hoje',d:'Lidera equipe de 15\npessoas e fatura 6 dígitos',color:'#f59e0b'}
+  ];
+  timeline.forEach((t,i)=>{
+    const ty=timeY+i*(timeH/3.5);
+    // Dot
+    ctx.beginPath();ctx.arc(w*0.12,ty,h*0.008,0,Math.PI*2);
+    ctx.fillStyle=t.color;ctx.fill();
+    ctx.beginPath();ctx.arc(w*0.12,ty,h*0.014,0,Math.PI*2);
+    ctx.fillStyle=t.color+'15';ctx.fill();
+    // Label
+    ctx.fillStyle=t.color;ctx.font='800 '+(h*0.013)+'px Inter';ctx.textAlign='left';
+    ctx.fillText(t.t,w*0.17,ty-h*0.005);
+    // Desc
+    const dLines=t.d.split('\n');
+    ctx.fillStyle='#94a3b8';ctx.font='400 '+(h*0.011)+'px Inter';
+    dLines.forEach((dl,j)=>{ctx.fillText(dl,w*0.17,ty+h*0.013+j*(h*0.015))});
+    // Glass card
+    drawGlassCard(ctx,w*0.55,ty-h*0.015,w*0.38,h*0.055,10,0.03);
+  });
+
+  // Transformation stat
+  drawGlassCard(ctx,w*0.06,h*0.76,w*0.88,h*0.08,16,0.04);
+  ctx.fillStyle='#22c55e';ctx.font='900 '+(h*0.035)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('+300.000',w/2,h*0.8);
+  ctx.fillStyle='#94a3b8';ctx.font='500 '+(h*0.012)+'px Inter';
+  ctx.fillText('vidas transformadas pela Tutory',w/2,h*0.82);
+
+  // CTA
+  drawNeonButton(ctx,w*0.1,h*0.87,w*0.8,h*0.05,'COMECE SUA HISTÓRIA','#22c55e','#0ea5e9');
+
+  // Footer
+  ctx.fillStyle='rgba(255,255,255,0.04)';ctx.font='900 '+(h*0.025)+'px Inter';ctx.textAlign='center';
+  ctx.fillText('TUTORY',w/2,h*0.97);
+}
+
+// ===== GENERATE CREATIVE CARDS =====
+function generateCreativeCards(){
+  const fmt=document.getElementById('fmtS').value;
+  const cat=document.getElementById('catS').value;
+  const copyText=document.getElementById('copyIn').value.trim();
+  const models=[
+    {name:'Tendência + Marca',sub:'Glassmorphism Premium — Apple/Notion/Linear style',draw:drawModel1,color:'#00d4ff',tagBg:'rgba(0,212,255,.1)',border:'rgba(0,212,255,.2)'},
+    {name:'Hormozi (Alta Conversão)',sub:'Bold + Urgência + Prova Social — G4/Hotmart style',draw:drawModel2,color:'#f59e0b',tagBg:'rgba(245,158,11,.1)',border:'rgba(245,158,11,.2)'},
+    {name:'Storytelling (Narrativo)',sub:'Timeline + ABT + Emoção — Premium Editorial',draw:drawModel3,color:'#22c55e',tagBg:'rgba(34,197,94,.1)',border:'rgba(34,197,94,.2)'}
+  ];
+
+  // Determine canvas size from format
+  let cw=540,ch=675; // half of 1080x1350 for preview
+  if(fmt.includes('1920')){cw=540;ch=960}
+  if(fmt.includes('1280')){cw=640;ch=360}
+
+  let html='';
+  models.forEach((model,mi)=>{
+    const id='art-m'+(mi+1);
+    html+=`
+    <div class="creative-item" style="border-color:${model.border}">
+      <div class="creative-preview" style="background:#020617">
+        <canvas id="cv-${id}" width="${cw}" height="${ch}" style="width:100%;height:100%"></canvas>
+      </div>
+      <div class="creative-info">
+        <div class="cr-title">${model.name}</div>
+        <div class="cr-meta">${model.sub}</div>
+        <div class="cr-meta" style="margin-top:2px">${fmt} &mdash; ${cat} &mdash; HD</div>
+        <div class="creative-actions">
+          <button class="dl-btn jpeg" onclick="downloadCreative('${id}','jpeg',${cw*2},${ch*2})">JPEG HD</button>
+          <button class="dl-btn png" onclick="downloadCreative('${id}','png',${cw*2},${ch*2})">PNG HD</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('creativeGallery').innerHTML=html;
+  document.getElementById('creativesOutput').style.display='block';
+
+  // Draw each model — truly different!
+  setTimeout(()=>{
+    models.forEach((model,mi)=>{model.draw('cv-art-m'+(mi+1),copyText)});
+  },100);
+}
+
+// ===== DOWNLOAD CREATIVE =====
+function downloadCreative(id,format,hiW,hiH){
+  const canvas=document.getElementById('cv-'+id);
+  if(!canvas)return;
+  hiW=hiW||1080;hiH=hiH||1350;
+
+  // Re-render at high resolution
+  const hiRes=document.createElement('canvas');
+  hiRes.width=hiW;hiRes.height=hiH;
+  const hiCtx=hiRes.getContext('2d');
+
+  // Find which model and re-draw at high res
+  const modelIdx=id.includes('m1')?0:id.includes('m2')?1:2;
+  const drawFns=[drawModel1,drawModel2,drawModel3];
+  const copyText=document.getElementById('copyIn').value.trim();
+
+  // Temporarily set the canvas to hi-res for drawing
+  const tempId='hiRes-temp';
+  hiRes.id=tempId;
+  hiRes.style.display='none';
+  document.body.appendChild(hiRes);
+  drawFns[modelIdx](tempId,copyText);
+
+  let link=document.createElement('a');
+  const names=['tendencia-marca','hormozi-conversao','storytelling-narrativo'];
+  link.download='bradok-'+names[modelIdx]+'-'+hiW+'x'+hiH+'.'+format;
+
+  if(format==='jpeg'){
+    link.href=hiRes.toDataURL('image/jpeg',0.95);
+  }else{
+    link.href=hiRes.toDataURL('image/png');
+  }
+  link.click();
+  document.body.removeChild(hiRes);
+}
+
+function downloadAll(){
+  const names=['tendencia-marca','hormozi-conversao','storytelling-narrativo'];
+  const drawFns=[drawModel1,drawModel2,drawModel3];
+  const copyText=document.getElementById('copyIn').value.trim();
+  const fmt=document.getElementById('fmtS').value;
+  let hiW=1080,hiH=1350;
+  if(fmt.includes('1920')){hiW=1080;hiH=1920}
+  if(fmt.includes('1280')){hiW=1280;hiH=720}
+
+  drawFns.forEach((fn,i)=>{
+    setTimeout(()=>{
+      const hiRes=document.createElement('canvas');
+      hiRes.width=hiW;hiRes.height=hiH;
+      hiRes.id='dl-temp-'+i;hiRes.style.display='none';
+      document.body.appendChild(hiRes);
+      fn('dl-temp-'+i,copyText);
+      const link=document.createElement('a');
+      link.download='bradok-'+names[i]+'-'+hiW+'x'+hiH+'.png';
+      link.href=hiRes.toDataURL('image/png');
+      link.click();
+      document.body.removeChild(hiRes);
+    },i*600);
+  });
+}
+
+// ===== MAIN FLOW =====
+function startFlow(){
+  const c=document.getElementById('copyIn').value.trim();
+  if(!c){alert('Cole a copy primeiro!');return}
+  if(selectedPlatforms.length===0){alert('Selecione pelo menos uma plataforma de criação!');return}
+
+  // Reset
+  setProgress(0);
+  document.getElementById('creativesOutput').style.display='none';
+  document.getElementById('referencesOutput').style.display='none';
+
+  addLog('BRADOK','linear-gradient(135deg,#00d4ff,#a855f7)','Fluxo autônomo v3 iniciado — 12 squads &middot; '+selectedPlatforms.length+' plataforma(s)');
+  addLog('INTAKE','rgba(0,212,255,.2)','Copy: "'+c.substring(0,60)+'..."');
+
+  if(refImages.length>0) addLog('REF','rgba(168,85,247,.2)',refImages.length+' imagem(ns) de referência carregadas');
+  const links=document.getElementById('refLinks').value.trim();
+  if(links) addLog('LINKS','rgba(168,85,247,.2)','Links de referência recebidos: '+links.split('\n').length+' link(s)');
+
+  setProgress(5);
+
+  // ETAPA 1: Time Joice
+  setTimeout(()=>{
+    setStatus('statusJoice','working');
+    setProgress(10);
+    addLog('JOICE','rgba(0,212,255,.2)','48 agentes iniciando pesquisa (Brand+Copy+Data+Advisory+Hormozi+Story+Movement+C-Level)...');
+  },800);
+
+  setTimeout(()=>{
+    setProgress(15);
+    addLog('BRAND','rgba(245,158,11,.2)','Alina Wheeler + Byron Sharp verificando consistência de marca...');
+    addLog('HOOKS','rgba(234,179,8,.2)','Hormozi Hooks gerando 5 variações de gancho...');
+  },2000);
+
+  setTimeout(()=>{
+    setProgress(25);
+    addLog('DATA','rgba(34,197,94,.2)','Sean Ellis + Kaushik analisando growth potential...');
+    addLog('RESEARCH','rgba(0,212,255,.2)','Monitor de Viralização: tendências edtech 2026 mapeadas');
+  },3500);
+
+  setTimeout(()=>{
+    setProgress(35);
+    setStatus('statusJoice','done');
+    addLog('JOICE','rgba(0,212,255,.3)','Pesquisa completa — 48 agentes entregaram briefing');
+    // Show references
+    const refs=getReferences(c);
+    renderReferences(refs);
+    addLog('REFS','rgba(168,85,247,.2)',refs.length+' referências encontradas — Edtech, Infoprodutos BR, Global Premium, G4 Business, Tendências 2026');
+    document.getElementById('referencesOutput').scrollIntoView({behavior:'smooth',block:'start'});
+  },5000);
+
+  // ETAPA 2: Time Lucas
+  setTimeout(()=>{
+    setStatus('statusLucas','working');
+    setProgress(40);
+    addLog('LUCAS','rgba(168,85,247,.2)','62 agentes iniciando criação de 3 modelos por plataforma...');
+  },5500);
+
+  setTimeout(()=>{
+    setProgress(50);
+    addLog('DESIGN','rgba(168,85,247,.2)','Design Chief + Visual Generator: layouts base gerados');
+    addLog('COPY','rgba(0,212,255,.2)','Gary Halbert + David Ogilvy: textos persuasivos prontos');
+  },7000);
+
+  setTimeout(()=>{
+    setProgress(60);
+    addLog('STORY','rgba(34,197,94,.2)','Park Howell (ABT) + Kindra Hall: narrativa aplicada aos modelos');
+    setStatus('statusLucas','done');
+  },9000);
+
+  // ETAPA 3: Aprovação
+  setTimeout(()=>{
+    setProgress(65);
+    addLog('SYSTEM','rgba(245,158,11,.3)','CHECKPOINT APROVAÇÃO: modelos criados — refinando automaticamente...');
+  },10000);
+
+  // ETAPA 4: Time Yan
+  setTimeout(()=>{
+    setStatus('statusYan','working');
+    setProgress(70);
+    addLog('YAN','rgba(244,114,182,.2)','41 agentes de refino ativados — checklist 12 pontos...');
+  },11000);
+
+  setTimeout(()=>{
+    setProgress(80);
+    addLog('ADVISORY','rgba(245,158,11,.2)','Peter Thiel: "É 10x melhor?" — validando...');
+    addLog('CYBER','rgba(0,212,255,.2)','Cyber Chief: compliance visual verificado');
+  },12500);
+
+  setTimeout(()=>{
+    setProgress(85);
+    setStatus('statusYan','done');
+    addLog('YAN','rgba(244,114,182,.3)','Refino premium completo — 12/12 critérios aprovados');
+  },14000);
+
+  // ETAPA 5: Analytics
+  setTimeout(()=>{
+    setStatus('statusAnalytics','working');
+    setProgress(90);
+    addLog('ANALYTICS','rgba(34,197,94,.2)','8 dimensões calculadas — score médio: 87/100 — VIRAL READY');
+  },15000);
+
+  // ETAPA 6: Export — criativos prontos
+  setTimeout(()=>{
+    setStatus('statusAnalytics','done');
+    setProgress(100);
+    addLog('EXPORT','rgba(0,212,255,.3)','CRIATIVOS PRONTOS — HD disponível para download');
+    addLog('BRADOK','linear-gradient(135deg,#22c55e,#00d4ff)','Fluxo completo! '+selectedPlatforms.length*3+' criativos gerados em alta definição');
+
+    // Generate the creative cards
+    generateCreativeCards();
+
+    // Scroll to output
+    setTimeout(()=>{
+      document.getElementById('creativesOutput').scrollIntoView({behavior:'smooth',block:'start'});
+    },300);
+  },16500);
+}
+
+// ===== UPLOAD (Analytics) =====
+function handleUpload(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(ev){document.getElementById('previewImg').src=ev.target.result;document.getElementById('previewArea').style.display='block'};
+  r.readAsDataURL(f);
+}
+
+// ===== ANALYTICS =====
+function runAnalytics(){
+  const res=document.getElementById('analyticsResults');res.style.display='block';
+  const dims=[
+    {name:'Visual Impact',score:Math.floor(Math.random()*20)+75,color:'#00d4ff'},
+    {name:'Hook Power',score:Math.floor(Math.random()*20)+70,color:'#f59e0b'},
+    {name:'Brand Consistency',score:Math.floor(Math.random()*15)+80,color:'#a855f7'},
+    {name:'Market Benchmark',score:Math.floor(Math.random()*20)+72,color:'#0ea5e9'},
+    {name:'Trend Alignment',score:Math.floor(Math.random()*20)+70,color:'#22c55e'},
+    {name:'Conversion Potential',score:Math.floor(Math.random()*20)+68,color:'#ef4444'},
+    {name:'Ad Performance',score:Math.floor(Math.random()*20)+70,color:'#f472b6'},
+    {name:'Viralization',score:Math.floor(Math.random()*25)+65,color:'#eab308'}
+  ];
+
+  let sc='';dims.forEach(d=>{sc+=`<div class="score-row"><span class="score-label">${d.name}</span><div style="flex:1"><div class="score-bar"><div class="score-fill" style="width:${d.score}%;background:${d.color};box-shadow:0 0 10px ${d.color}40"></div></div></div><span class="score-val" style="color:${d.color}">${d.score}</span></div>`});
+  document.getElementById('scoreCards').innerHTML=sc;
+
+  const avg=Math.round(dims.reduce((a,d)=>a+d.score,0)/dims.length);
+  const ov=document.getElementById('overallScore');ov.textContent=avg+'/100';
+  ov.style.color=avg>=85?'#22c55e':avg>=75?'#00d4ff':avg>=65?'#f59e0b':'#ef4444';
+  ov.style.textShadow=`0 0 40px ${ov.style.color}60`;
+
+  const cl=document.getElementById('classification');
+  if(avg>=85){cl.textContent='VIRAL READY';cl.style.background='rgba(34,197,94,.1)';cl.style.color='#22c55e';cl.style.border='1px solid rgba(34,197,94,.3)'}
+  else if(avg>=75){cl.textContent='ALTA PERFORMANCE';cl.style.background='rgba(0,212,255,.1)';cl.style.color='#00d4ff';cl.style.border='1px solid rgba(0,212,255,.3)'}
+  else if(avg>=65){cl.textContent='PRECISA AJUSTE';cl.style.background='rgba(245,158,11,.1)';cl.style.color='#f59e0b';cl.style.border='1px solid rgba(245,158,11,.3)'}
+  else{cl.textContent='REFAZER';cl.style.background='rgba(239,68,68,.1)';cl.style.color='#ef4444';cl.style.border='1px solid rgba(239,68,68,.3)'}
+
+  const bmarks=[{name:'Hotmart',diff:Math.floor(Math.random()*20)-5},{name:'Kiwify',diff:Math.floor(Math.random()*20)-3},{name:'Eduzz',diff:Math.floor(Math.random()*20)-2},{name:'Premium Global',diff:Math.floor(Math.random()*15)-10}];
+  let bh='';bmarks.forEach(b=>{const pos=b.diff>=0;bh+=`<div class="benchmark-row"><span class="benchmark-name">${b.name}</span><div style="flex:1"><div class="score-bar"><div class="score-fill" style="width:${Math.min(100,avg+b.diff)}%;background:${pos?'#22c55e':'#f59e0b'};box-shadow:0 0 8px ${pos?'rgba(34,197,94,.3)':'rgba(245,158,11,.3)'}"></div></div></div><span class="benchmark-diff" style="color:${pos?'#22c55e':'#ef4444'}">${pos?'+':''}${b.diff} pts</span></div>`});
+  document.getElementById('benchmarks').innerHTML=bh;
+
+  const viral=Math.min(95,Math.max(15,avg-10+Math.floor(Math.random()*15)));
+  const vp=document.getElementById('viralPct');
+  vp.textContent=viral+'%';
+  vp.style.color=viral>=70?'#22c55e':viral>=50?'#f59e0b':'#ef4444';
+  vp.style.textShadow=`0 0 50px ${vp.style.color}50`;
+
+  const recs=['Aumentar contraste do CTA — botão precisa de mais destaque visual','Adicionar prova social visível (números, depoimentos) para aumentar conversion','Hook precisa ser mais específico — usar números concretos para curiosity gap'];
+  let rh='';recs.forEach((r,i)=>{rh+=`<div style="padding:12px 16px;background:rgba(255,255,255,.02);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.04);border-radius:12px;margin-bottom:8px;font-size:12px;color:var(--t2);transition:all .3s"><span style="color:var(--neon);font-weight:700;font-family:'JetBrains Mono',monospace">0${i+1}</span>&nbsp;&nbsp;${r}</div>`});
+  document.getElementById('recommendations').innerHTML=rh;
+
+  drawRadar(dims);
+}
+
+// ===== RADAR CHART =====
+function drawRadar(dims){
+  const c=document.getElementById('radarChart');const ctx=c.getContext('2d');
+  const cx=180,cy=180,r=140;ctx.clearRect(0,0,360,360);
+  const n=dims.length;const step=2*Math.PI/n;
+
+  // Grid rings
+  for(let ring=1;ring<=4;ring++){
+    ctx.beginPath();const rr=r*ring/4;
+    for(let i=0;i<=n;i++){const a=-Math.PI/2+step*i;const x=cx+rr*Math.cos(a);const y=cy+rr*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+    ctx.strokeStyle='rgba(0,212,255,0.06)';ctx.lineWidth=1;ctx.stroke();
+  }
+
+  // Axes
+  for(let i=0;i<n;i++){
+    const a=-Math.PI/2+step*i;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    ctx.strokeStyle='rgba(0,212,255,0.05)';ctx.lineWidth=1;ctx.stroke();
+    const lx=cx+(r+22)*Math.cos(a);const ly=cy+(r+22)*Math.sin(a);
+    ctx.fillStyle='#64748b';ctx.font='500 9px Inter';ctx.textAlign='center';ctx.textBaseline='middle';
+    const label=dims[i].name.split(' ');label.forEach((w,j)=>{ctx.fillText(w,lx,ly+j*11)});
+  }
+
+  // Data fill
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){const idx=i%n;const a=-Math.PI/2+step*idx;const val=dims[idx].score/100;const x=cx+r*val*Math.cos(a);const y=cy+r*val*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+  const gradient=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  gradient.addColorStop(0,'rgba(0,212,255,0.2)');gradient.addColorStop(1,'rgba(0,212,255,0.02)');
+  ctx.fillStyle=gradient;ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.6)';ctx.lineWidth=2;ctx.stroke();
+
+  // Glow line
+  ctx.beginPath();
+  for(let i=0;i<=n;i++){const idx=i%n;const a=-Math.PI/2+step*idx;const val=dims[idx].score/100;const x=cx+r*val*Math.cos(a);const y=cy+r*val*Math.sin(a);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+  ctx.strokeStyle='rgba(0,212,255,0.15)';ctx.lineWidth=6;ctx.stroke();
+
+  // Points
+  for(let i=0;i<n;i++){
+    const a=-Math.PI/2+step*i;const val=dims[i].score/100;
+    const x=cx+r*val*Math.cos(a);const y=cy+r*val*Math.sin(a);
+    // Glow
+    ctx.beginPath();ctx.arc(x,y,8,0,2*Math.PI);ctx.fillStyle='rgba(0,212,255,0.15)';ctx.fill();
+    // Point
+    ctx.beginPath();ctx.arc(x,y,4,0,2*Math.PI);ctx.fillStyle=dims[i].color;ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1;ctx.stroke();
+  }
+}
+</script>
+</body>
+</html>
