@@ -564,6 +564,84 @@ textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20
 
 /* Selection */
 ::selection{background:rgba(0,212,255,.2);color:#fff}
+
+/* ===== BRADOK CHAT ===== */
+.chat-container{height:calc(100vh - 80px);display:flex;flex-direction:column}
+.chat-header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);backdrop-filter:blur(20px);border-radius:18px 18px 0 0}
+.chat-avatar{width:40px;height:40px;background:linear-gradient(135deg,var(--neon),var(--purple));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;box-shadow:0 0 15px rgba(0,212,255,.25)}
+.chat-status{font-size:9px;color:var(--green);display:flex;align-items:center;gap:4px}
+.chat-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.chat-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.chat-msg{display:flex;gap:10px;max-width:85%;animation:fadeInMsg .3s ease}
+@keyframes fadeInMsg{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg.bot{align-self:flex-start}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-msg .msg-avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.chat-msg.bot .msg-avatar{background:linear-gradient(135deg,var(--neon),var(--purple));color:#fff}
+.chat-msg.user .msg-avatar{background:rgba(0,212,255,.15);color:var(--neon)}
+.chat-msg .msg-bubble{padding:14px 18px;border-radius:16px;font-size:13px;line-height:1.7;position:relative}
+.chat-msg.bot .msg-bubble{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-top-left-radius:4px}
+.chat-msg.user .msg-bubble{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);border-top-right-radius:4px}
+.msg-time{font-size:9px;color:var(--t3);margin-top:6px;display:block}
+.chat-suggestions{display:flex;gap:6px;flex-wrap:wrap;padding:10px 20px}
+.chat-sug{padding:7px 14px;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);font-size:11px;color:var(--t2);cursor:pointer;transition:all .3s;font-weight:500}
+.chat-sug:hover{background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.2);color:var(--neon)}
+.chat-input-area{padding:14px 20px;border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02)}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input-row textarea{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 16px;color:var(--t1);font-family:'Inter',sans-serif;font-size:13px;resize:none;min-height:44px;max-height:120px;transition:all .3s}
+.chat-input-row textarea:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 15px rgba(0,212,255,.06)}
+.chat-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .3s;flex-shrink:0}
+.chat-btn:hover{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.2);color:var(--neon)}
+.chat-btn.send{background:linear-gradient(135deg,var(--neon),#0ea5e9);color:#020617;border:none}
+.chat-btn.send:hover{box-shadow:0 0 20px rgba(0,212,255,.3);transform:translateY(-1px)}
+.skills-dropdown{position:relative;display:inline-block}
+.skills-menu{display:none;position:absolute;bottom:48px;left:0;background:rgba(15,23,42,.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:6px;min-width:200px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.skills-menu.open{display:block}
+.skills-menu-item{padding:9px 14px;border-radius:8px;font-size:11px;color:var(--t2);cursor:pointer;transition:all .2s;font-weight:500}
+.skills-menu-item:hover{background:rgba(0,212,255,.08);color:var(--neon)}
+.chat-typing{display:none;gap:4px;padding:8px 14px;align-self:flex-start}
+.chat-typing.active{display:flex}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--neon);animation:typingDot 1.4s infinite;opacity:.3}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+
+/* ===== VISUAL CUSTOMIZATION CONTROLS ===== */
+.vc-section{margin-bottom:14px;padding:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);border-radius:14px}
+.vc-title{font-size:11px;font-weight:700;color:var(--neon);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.vc-row{display:flex;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.vc-label{font-size:10px;color:var(--t3);min-width:70px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.color-pick{width:34px;height:34px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:transparent;cursor:pointer;padding:2px;-webkit-appearance:none;appearance:none}
+.color-pick::-webkit-color-swatch{border:none;border-radius:6px}
+.color-pick::-webkit-color-swatch-wrapper{padding:0}
+.grad-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t2);cursor:pointer}
+.grad-toggle input[type="checkbox"]{accent-color:var(--neon);width:14px;height:14px}
+.grad-dir{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 10px;color:var(--t2);font-size:10px;font-family:'Inter',sans-serif;-webkit-appearance:none;appearance:none}
+.text-input-sm{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:8px 12px;color:var(--t1);font-family:'Inter',sans-serif;font-size:12px;flex:1;min-width:100px;transition:all .3s}
+.text-input-sm:focus{outline:none;border-color:rgba(0,212,255,.3)}
+.weight-select,.case-select{display:flex;gap:3px}
+.weight-opt,.case-opt{padding:5px 10px;border-radius:7px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;font-size:10px;color:var(--t2);transition:all .3s;font-weight:500}
+.weight-opt.active,.case-opt.active{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3);color:var(--neon)}
+.weight-opt:hover,.case-opt:hover{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.15)}
+.pos-grid{display:grid;grid-template-columns:repeat(3,26px);gap:3px}
+.pos-cell{width:26px;height:26px;border-radius:5px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;font-size:7px;color:var(--t3)}
+.pos-cell:hover{background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.2)}
+.pos-cell.active{background:rgba(0,212,255,.12);border-color:var(--neon);box-shadow:0 0 10px rgba(0,212,255,.2);color:var(--neon)}
+.carousel-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.carousel-tab{padding:7px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;font-size:11px;color:var(--t2);transition:all .3s;font-weight:500}
+.carousel-tab:hover{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.15)}
+.carousel-tab.active{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3);color:var(--neon)}
+.mode-toggle{display:flex;gap:8px;margin-bottom:14px}
+.mode-opt{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);cursor:pointer;text-align:center;transition:all .3s}
+.mode-opt:hover{border-color:rgba(0,212,255,.15)}
+.mode-opt.active{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3)}
+.mode-opt .mode-icon{font-size:20px;margin-bottom:4px}
+.mode-opt .mode-name{font-size:11px;font-weight:700;color:var(--t1)}
+.mode-opt .mode-desc{font-size:9px;color:var(--t3);margin-top:2px}
+.page-count-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.page-count-row label{font-size:10px;color:var(--t2);font-weight:600}
+.page-count-row input[type="number"]{width:60px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 10px;color:var(--t1);font-family:'Inter',sans-serif;font-size:12px;text-align:center}
+.page-count-row input:focus{outline:none;border-color:rgba(0,212,255,.3)}
 </style>
 </head>
 <body>
@@ -585,6 +663,7 @@ textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20
   </div>
   <div class="nav">
     <div class="nav-section">Principal</div>
+    <div class="nav-item" onclick="go('chat')"><span class="ic">&#128172;</span><span>BRADOK Chat</span><span class="nav-badge" style="background:rgba(34,197,94,.15);color:#22c55e;border-color:rgba(34,197,94,.3)">IA</span></div>
     <div class="nav-item active" onclick="go('dash')"><span class="ic">&#9632;</span><span>Dashboard</span></div>
     <div class="nav-item" onclick="go('work')"><span class="ic">&#9998;</span><span>Workspace</span></div>
     <div class="nav-item" onclick="go('pipe')"><span class="ic">&#8644;</span><span>Pipeline</span></div>
@@ -602,6 +681,52 @@ textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20
 </nav>
 
 <main class="main">
+
+<!-- BRADOK CHAT -->
+<div class="panel" id="p-chat">
+  <div class="card chat-container" style="padding:0;overflow:hidden">
+    <div class="chat-header">
+      <div class="chat-avatar neon-pulse">B</div>
+      <div>
+        <div style="font-weight:700;font-size:14px">BRADOK IA</div>
+        <div class="chat-status">Online &middot; 151+ agentes prontos</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <span style="font-size:9px;padding:4px 10px;border-radius:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15);color:var(--neon);font-weight:600">v3</span>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-typing" id="chatTyping"><span></span><span></span><span></span></div>
+    <div class="chat-suggestions" id="chatSuggestions">
+      <div class="chat-sug" onclick="sendSuggested('Como usar a Nova Demanda?')">Como usar Nova Demanda?</div>
+      <div class="chat-sug" onclick="sendSuggested('Criar prompt para carrossel')">Criar prompt carrossel</div>
+      <div class="chat-sug" onclick="sendSuggested('Melhorar minha copy')">Melhorar minha copy</div>
+      <div class="chat-sug" onclick="sendSuggested('Como funciona o fluxo dos agentes?')">Como funciona o fluxo?</div>
+      <div class="chat-sug" onclick="sendSuggested('Quais são os 12 squads?')">Quais são os squads?</div>
+    </div>
+    <div class="chat-input-area">
+      <div class="chat-input-row">
+        <label class="chat-btn" title="Anexar arquivo" style="position:relative;overflow:hidden">
+          &#128206;
+          <input type="file" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer" onchange="handleChatFile(event)">
+        </label>
+        <div class="skills-dropdown">
+          <button class="chat-btn" onclick="toggleSkills()" title="Habilidades">&#9889;</button>
+          <div class="skills-menu" id="skillsMenu">
+            <div class="skills-menu-item" onclick="insertSkill('Melhorar Copy')">&#9997; Melhorar Copy</div>
+            <div class="skills-menu-item" onclick="insertSkill('Criar Prompt')">&#128161; Criar Prompt</div>
+            <div class="skills-menu-item" onclick="insertSkill('Dúvidas BRADOK')">&#10067; Dúvidas BRADOK</div>
+            <div class="skills-menu-item" onclick="insertSkill('Prompt para Time Joice')">&#128269; Prompt para Joice</div>
+            <div class="skills-menu-item" onclick="insertSkill('Prompt para Time Lucas')">&#127912; Prompt para Lucas</div>
+            <div class="skills-menu-item" onclick="insertSkill('Prompt para Time Yan')">&#10024; Prompt para Yan</div>
+          </div>
+        </div>
+        <textarea id="chatInput" placeholder="Pergunte ao BRADOK..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}" rows="1"></textarea>
+        <button class="chat-btn send" onclick="sendChat()" title="Enviar">&#10148;</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- DASHBOARD -->
 <div class="panel active" id="p-dash">
@@ -754,6 +879,38 @@ textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20
           <div style="font-size:9px;color:var(--t3);margin-top:1px">Uma versão de cada</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 04: MODO ESTÁTICO / CARROSSEL -->
+  <div class="card" style="margin-bottom:16px">
+    <label style="font-size:9px;color:var(--neon);display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700">04 &mdash; Modo de Exibição</label>
+    <div class="mode-toggle">
+      <div class="mode-opt active" onclick="setDisplayMode('static')" id="modeStatic">
+        <div class="mode-icon">&#128196;</div>
+        <div class="mode-name">Estático</div>
+        <div class="mode-desc">Peça única</div>
+      </div>
+      <div class="mode-opt" onclick="setDisplayMode('carousel')" id="modeCarousel">
+        <div class="mode-icon">&#128218;</div>
+        <div class="mode-name">Carrossel</div>
+        <div class="mode-desc">Múltiplas páginas</div>
+      </div>
+    </div>
+    <div id="carouselControls" style="display:none">
+      <div class="page-count-row">
+        <label>Páginas:</label>
+        <input type="number" id="pageCount" value="3" min="2" max="10" onchange="updateCarouselPages()">
+      </div>
+      <div class="carousel-tabs" id="carouselTabs"></div>
+    </div>
+  </div>
+
+  <!-- BLOCO 05: PERSONALIZAÇÃO VISUAL -->
+  <div class="card" style="margin-bottom:16px">
+    <label style="font-size:9px;color:var(--neon);display:block;margin-bottom:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700">05 &mdash; Personalização Visual</label>
+    <div id="visualCustomArea">
+      <!-- Gerado por JS: cada página (ou single) terá seus controles -->
     </div>
   </div>
 
@@ -978,6 +1135,32 @@ textarea.wi:focus{outline:none;border-color:rgba(0,212,255,.3);box-shadow:0 0 20
         <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--orange)"></span>Canva MCP — Reconectar por sessão</div>
         <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--neon)"></span>Paper.design — Desktop app</div>
         <div style="display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green)"></span>xquads — 12 squads (377 arquivos)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">&#129302; BRADOK Chat — API Key</div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;font-weight:600">Provedor</label>
+        <select id="cfgProvider" style="width:100%;background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px;color:#e2e8f0;font-family:'Inter',sans-serif;font-size:12px;-webkit-appearance:none;appearance:none">
+          <option value="simulated">Simulado (sem API)</option>
+          <option value="openai">OpenAI (GPT-4)</option>
+          <option value="anthropic">Anthropic (Claude)</option>
+        </select>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:10px;color:var(--t3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px;font-weight:600">API Key</label>
+        <input type="password" id="cfgApiKey" placeholder="sk-... ou chave da API" style="width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px;color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:11px">
+      </div>
+      <button class="btn btn-s btn-sm" onclick="saveChatConfig()" style="width:100%;justify-content:center">Salvar Configuração</button>
+      <div id="cfgStatus" style="font-size:10px;color:var(--green);margin-top:8px;text-align:center;display:none">Configuração salva!</div>
+    </div>
+    <div class="card">
+      <div class="card-t" style="margin-bottom:12px">Sobre</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7">
+        <strong style="color:var(--neon)">BRADOK v4</strong> — IA de Marketing Estratégico<br>
+        Tutory &middot; +300K alunos &middot; +500 mentores<br>
+        12 squads &middot; 151+ agentes &middot; 3 times<br>
+        Chat IA integrado &middot; Personalização visual avançada
       </div>
     </div>
   </div>
@@ -1779,6 +1962,567 @@ function drawRadar(dims){
     ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=1;ctx.stroke();
   }
 }
+
+// ===== BRADOK CHAT SYSTEM =====
+let chatMessages=[];
+let chatConfig={provider:'simulated',apiKey:''};
+
+function initChat(){
+  const welcome=`Fala, meu parceiro! Eu sou o **BRADOK**, sua IA de marketing estratégico da Tutory! 🚀
+
+Tô aqui pra te ajudar a tirar o máximo dos nossos **151+ agentes** organizados em **12 squads** e **3 times**:
+
+🔍 **Time Joice (48 agentes)** — Pesquisa, inteligência e estratégia
+🎨 **Time Lucas (62 agentes)** — Criação, design e execução visual
+✨ **Time Yan (41 agentes)** — Refino premium e controle de qualidade
+
+**O que eu posso fazer por você:**
+• Explicar como usar a **Nova Demanda** (Workspace)
+• Criar **prompts otimizados** pra cada time
+• Melhorar sua **copy** pra máxima conversão
+• Tirar qualquer dúvida sobre o sistema BRADOK
+• Ajudar com **personalização visual** (cores, tipografia, posicionamento)
+
+Manda sua pergunta que eu respondo na hora! 💪
+
+Vasco! 🤙`;
+  addChatMsg('bot',welcome);
+}
+
+function addChatMsg(sender,text){
+  const now=new Date();
+  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  chatMessages.push({sender,text,time});
+  renderChat();
+}
+
+function renderChat(){
+  const area=document.getElementById('chatMessages');
+  let html='';
+  chatMessages.forEach(m=>{
+    const cls=m.sender==='bot'?'bot':'user';
+    const av=m.sender==='bot'?'B':'U';
+    const formatted=m.text.replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--neon)">$1</strong>').replace(/\n/g,'<br>');
+    html+=`<div class="chat-msg ${cls}"><div class="msg-avatar">${av}</div><div class="msg-bubble">${formatted}<span class="msg-time">${m.time}</span></div></div>`;
+  });
+  area.innerHTML=html;
+  area.scrollTop=area.scrollHeight;
+}
+
+function sendChat(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text)return;
+  addChatMsg('user',text);
+  input.value='';
+  input.style.height='44px';
+
+  // Show typing
+  document.getElementById('chatTyping').classList.add('active');
+
+  setTimeout(()=>{
+    document.getElementById('chatTyping').classList.remove('active');
+    if(chatConfig.provider==='simulated'||!chatConfig.apiKey){
+      const response=getBradokResponse(text);
+      addChatMsg('bot',response);
+    }else{
+      callChatAPI(text);
+    }
+  },800+Math.random()*1200);
+}
+
+function sendSuggested(text){
+  document.getElementById('chatInput').value=text;
+  sendChat();
+  document.getElementById('chatSuggestions').style.display='none';
+}
+
+function getBradokResponse(input){
+  const q=input.toLowerCase();
+
+  if(q.includes('nova demanda')||q.includes('workspace')){
+    return `Show! A **Nova Demanda** é onde a mágica acontece! 🎯
+
+**Passo a passo:**
+1. **Cole sua copy** no campo de texto principal
+2. Escolha **formato** (feed, stories, carrossel...), **categoria**, **modo** e **objetivo**
+3. Adicione **referências visuais** (imagens ou links)
+4. Escolha a **plataforma** (Canva, Paper, Nano Banana, BRADOK Engine)
+5. Configure a **personalização visual** (cores, tipografia, posição dos textos)
+6. Clique em **Iniciar Fluxo BRADOK**
+
+Os 151+ agentes trabalham em sequência: Joice pesquisa → Lucas cria → aprovação → Yan refina → Analytics avalia → Export!
+
+Dica: quanto mais detalhada a copy, melhor o resultado!
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('carrossel')||q.includes('carousel')){
+    return `Carrossel é sucesso garantido! 📱
+
+**Para criar um carrossel:**
+1. Na Nova Demanda, bloco 04, selecione **Carrossel**
+2. Defina o número de **páginas** (2 a 10)
+3. Cada página tem sua própria **personalização**:
+   - Cor de fundo (RGB + degradê)
+   - Título, palavra-chave e texto secundário
+   - Cada texto com peso, caixa e posição própria
+4. Use o **grid 3x3** pra posicionar cada texto
+
+**Dica de prompt pro Time Lucas:**
+"Carrossel 5 páginas, tema educação, estilo glassmorphism. Página 1: hook forte. Páginas 2-4: benefícios. Página 5: CTA urgente."
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('copy')||q.includes('melhorar')){
+    return `Bora melhorar essa copy! ✍️
+
+**Estrutura que converte:**
+1. **Hook** — Primeira frase tem que prender (use números, perguntas ou provocações)
+2. **Problema** — Mostre que você entende a dor do público
+3. **Solução** — Apresente sua oferta como a resposta
+4. **Prova social** — Números, depoimentos, resultados
+5. **CTA** — Chamada pra ação clara e urgente
+
+**Exemplo de prompt pro Time Joice:**
+"Pesquisar hooks virais no nicho educação tech 2026. Focar em dor: profissionais estagnados. Benchmark: G4 Educação, Hotmart top sellers."
+
+**Pro Time Lucas:**
+"Criar copy de alta conversão. Tom: profissional mas acessível. Incluir prova social (+300K alunos). CTA: GARANTIR MINHA VAGA."
+
+Cola sua copy aqui que eu ajudo a turbinar! 🔥
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('fluxo')||q.includes('agentes')||q.includes('como funciona')){
+    return `O fluxo BRADOK tem **7 etapas** automáticas! ⚡
+
+**01 INTAKE** → Recebe sua copy e configurações
+**02 INTELLIGENCE** → Time Joice (48 agentes) pesquisa referências, tendências, hooks
+**03 CRIAÇÃO** → Time Lucas (62 agentes) gera layouts, copy persuasiva, 3 modelos visuais
+**04 APROVAÇÃO** → Checkpoint automático de qualidade
+**05 REFINO** → Time Yan (41 agentes) aplica checklist de 12 pontos premium
+**06 ANALYTICS** → 8 dimensões analisadas (Visual Impact, Hook Power, Brand, etc.)
+**07 EXPORT** → Criativos em HD prontos pra download (JPEG/PNG)
+
+Tudo isso roda em poucos minutos! Os 3 times trabalham com squads especializados: Brand, Copy, Design, Storytelling, Traffic, Hormozi, Advisory e mais.
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('squad')||q.includes('time')){
+    return `Nossos **12 squads** são organizados em 3 times:
+
+🔍 **TIME JOICE (48 agentes) — Inteligência:**
+Brand Squad (12) • Copy Squad diagnóstico (2) • Data Squad • Advisory Board • Hormozi hooks • Storytelling pesquisa • Movement análise • C-Level CMO
+
+🎨 **TIME LUCAS (62 agentes) — Criação:**
+Design Squad (8) • Copy Squad redação (14) • Storytelling narrativa • Hormozi copy • Brand visual • Claude Code Mastery
+
+✨ **TIME YAN (41 agentes) — Refino:**
+Advisory Board revisão (6) • Copy refino • Hormozi otimização • Movement validação • Cybersecurity • C-Level COO • Brand QA
+
+Cada squad tem agentes especializados inspirados nos maiores nomes do marketing: Gary Halbert, David Ogilvy, Alex Hormozi, Peter Thiel, e muito mais!
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('joice')){
+    return `O **Time Joice** é a inteligência do BRADOK! 🧠
+
+**48 agentes** de 8 squads:
+• **Brand Squad** (12): David Aaker, Kevin Keller, Kapferer, Al Ries, Byron Sharp, Marty Neumeier...
+• **Copy Squad** (diagnóstico): Copy Chief Cyrus + Eugene Schwartz
+• **Data Squad**: Avinash Kaushik, Sean Ellis
+• **Advisory Board**: Ray Dalio, Simon Sinek
+• **Hormozi**: Hooks + Offers
+• **Storytelling**: Pesquisa narrativa
+• **Movement**: Análise viral
+• **C-Level**: CMO Architect
+
+**Prompt ideal pra Joice:**
+"Pesquisar tendências visuais edtech 2026. Mapear hooks virais do Instagram BR. Analisar benchmark Hotmart/Kiwify/G4. Identificar padrão visual que mais converte."
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('lucas')){
+    return `O **Time Lucas** é a força criativa! 🎨
+
+**62 agentes** de 6 squads:
+• **Design Squad** (8): Design Chief, Visual Generator, Brad Frost, Dan Mall...
+• **Copy Squad** (14): Gary Halbert, David Ogilvy, Dan Kennedy, Russell Brunson, Joe Sugarman...
+• **Storytelling**: Park Howell (ABT), Kindra Hall, Nancy Duarte
+• **Hormozi Copy**: Copy estilo Alex Hormozi
+• **Brand Visual**: Alina Wheeler
+• **Claude Code**: Automação BRADOK
+
+**Prompt ideal pra Lucas:**
+"Criar 3 variações visuais: glassmorphism premium, Hormozi alta conversão, storytelling narrativo. Formato feed 1080x1350. Cores: azul neon + roxo. CTA: botão com glow."
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('yan')){
+    return `O **Time Yan** é o refinador premium! ✨
+
+**41 agentes** de 7 squads:
+• **Advisory Board** (6): Peter Thiel, Reid Hoffman, Brené Brown, Derek Sivers...
+• **Copy Refino**: David Deutsch, Clayton Makepeace
+• **Hormozi**: Retention + Scale
+• **Movement**: Architect + Identitário
+• **Cybersecurity**: Compliance visual
+• **C-Level**: COO + CIO
+
+**Checklist 12 pontos do Yan:**
+1. Hierarquia tipográfica ✓
+2. Espaçamento golden ratio ✓
+3. CTA com contraste máximo ✓
+4-12. Paleta, WCAG, grid 8px, detalhes premium, ativos Tutory, hook 0.5s, score 75+, benchmark...
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('prompt')){
+    return `Bora criar um prompt matador! 🎯
+
+**Estrutura de prompt eficaz pro BRADOK:**
+
+📝 **Para o Time Joice (pesquisa):**
+"Pesquisar [tema]. Focar em [público-alvo]. Mapear [tipo de conteúdo] no [plataforma]. Benchmark: [concorrentes]."
+
+🎨 **Para o Time Lucas (criação):**
+"Criar [formato] com [estilo visual]. Tom: [formal/casual/urgente]. Elementos: [lista]. CTA: [texto do botão]. Cores: [paleta]."
+
+✨ **Para o Time Yan (refino):**
+"Refinar para score mínimo [número]/100. Priorizar [hook/CTA/brand]. Ajustar [elemento] para [objetivo]."
+
+**Dica de ouro:** Seja específico! Quanto mais detalhes, melhor os agentes trabalham.
+
+Me fala o que você quer criar que eu monto o prompt ideal!
+
+Vasco! 🤙`;
+  }
+
+  if(q.includes('cor')||q.includes('personaliz')||q.includes('visual')){
+    return `A personalização visual ficou show! 🎨
+
+No bloco **05 — Personalização Visual** da Nova Demanda, você controla:
+
+**Background:**
+• Cor sólida via color picker RGB
+• Degradê com 2 cores + direção (horizontal, vertical, diagonal...)
+
+**Título / Palavra-chave / Texto Secundário:**
+• Campo de texto pra digitar o conteúdo
+• Cor RGB + opção de degradê
+• Peso: Light (300), Regular (400), Bold (700), Extra Bold (900)
+• Caixa: minúscula ou MAIÚSCULA
+• Posição no **grid 3x3** (9 posições possíveis)
+
+No modo **Carrossel**, cada página tem sua própria personalização independente!
+
+Vasco! 🤙`;
+  }
+
+  // Default response
+  return `Boa pergunta! 🤔
+
+Posso te ajudar com várias coisas:
+• Como usar a **Nova Demanda** pra criar peças incríveis
+• Criar **prompts otimizados** pra cada time (Joice, Lucas, Yan)
+• **Melhorar sua copy** pra máxima conversão
+• Explicar os **12 squads** e **151+ agentes**
+• Dicas de **personalização visual** (cores, tipografia, posição)
+• Como funciona o **fluxo automático** de 7 etapas
+
+Me conta mais sobre o que você precisa que eu detalho!
+
+Vasco! 🤙`;
+}
+
+async function callChatAPI(userMsg){
+  try{
+    let endpoint,headers,body;
+    if(chatConfig.provider==='openai'){
+      endpoint='https://api.openai.com/v1/chat/completions';
+      headers={'Content-Type':'application/json','Authorization':'Bearer '+chatConfig.apiKey};
+      body=JSON.stringify({model:'gpt-4',messages:[{role:'system',content:'Você é o BRADOK, IA de marketing da Tutory. Responda em português, de forma didática e descontraída. Sempre termine com "Vasco! 🤙". Você conhece os 12 squads, 151+ agentes, 3 times (Joice 48, Lucas 62, Yan 41). Ajude com prompts, copy e uso do dashboard.'},{role:'user',content:userMsg}],max_tokens:1000});
+    }else if(chatConfig.provider==='anthropic'){
+      endpoint='https://api.anthropic.com/v1/messages';
+      headers={'Content-Type':'application/json','x-api-key':chatConfig.apiKey,'anthropic-version':'2023-06-01'};
+      body=JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:'Você é o BRADOK, IA de marketing da Tutory. Responda em português, de forma didática e descontraída. Sempre termine com "Vasco! 🤙". Você conhece os 12 squads, 151+ agentes, 3 times (Joice 48, Lucas 62, Yan 41).',messages:[{role:'user',content:userMsg}]});
+    }
+    const res=await fetch(endpoint,{method:'POST',headers,body});
+    const data=await res.json();
+    let reply='';
+    if(chatConfig.provider==='openai') reply=data.choices?.[0]?.message?.content||'Erro na resposta da API.';
+    else if(chatConfig.provider==='anthropic') reply=data.content?.[0]?.text||'Erro na resposta da API.';
+    if(!reply.includes('Vasco'))reply+='\n\nVasco! 🤙';
+    addChatMsg('bot',reply);
+  }catch(e){
+    addChatMsg('bot','Ops, tive um problema pra conectar na API. Verifica a chave nas Configurações! 🔧\n\nVasco! 🤙');
+  }
+}
+
+function toggleSkills(){
+  document.getElementById('skillsMenu').classList.toggle('open');
+}
+
+function insertSkill(skill){
+  const input=document.getElementById('chatInput');
+  input.value='['+skill+'] '+input.value;
+  input.focus();
+  document.getElementById('skillsMenu').classList.remove('open');
+}
+
+function handleChatFile(e){
+  const f=e.target.files[0];
+  if(!f)return;
+  addChatMsg('user','📎 Arquivo anexado: '+f.name+' ('+Math.round(f.size/1024)+'KB)');
+  setTimeout(()=>{
+    addChatMsg('bot','Recebi o arquivo **'+f.name+'**! 📄\n\nPor enquanto, eu consigo analisar o nome e tipo do arquivo pra te dar sugestões. Pra análise completa de imagens, use o **Analytics** no menu lateral!\n\nSe for uma copy em texto, cola o conteúdo direto no chat que eu ajudo a melhorar.\n\nVasco! 🤙');
+  },1000);
+}
+
+function saveChatConfig(){
+  chatConfig.provider=document.getElementById('cfgProvider').value;
+  chatConfig.apiKey=document.getElementById('cfgApiKey').value;
+  const st=document.getElementById('cfgStatus');
+  st.style.display='block';
+  st.textContent=chatConfig.provider==='simulated'?'Modo simulado ativo!':'API configurada: '+chatConfig.provider;
+  setTimeout(()=>st.style.display='none',3000);
+}
+
+// Close skills menu on click outside
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.skills-dropdown')){
+    document.getElementById('skillsMenu')?.classList.remove('open');
+  }
+});
+
+// ===== VISUAL CUSTOMIZATION SYSTEM =====
+let displayMode='static';
+let carouselPageCount=3;
+let activeCarouselPage=1;
+let pageConfigs={};
+
+function initVisualCustom(){
+  pageConfigs[1]=defaultPageConfig();
+  renderVisualCustom(1);
+}
+
+function defaultPageConfig(){
+  return{
+    bg:{color:'#020617',gradient:false,color2:'#0a1628',direction:'to bottom'},
+    title:{text:'',color:'#ffffff',gradient:false,color2:'#00d4ff',direction:'to right',weight:'700',case:'upper',pos:'tc'},
+    keyword:{text:'',color:'#00d4ff',gradient:false,color2:'#a855f7',direction:'to right',weight:'900',case:'upper',pos:'mc'},
+    secondary:{text:'',color:'#94a3b8',gradient:false,color2:'#64748b',direction:'to right',weight:'400',case:'lower',pos:'bc'}
+  };
+}
+
+function setDisplayMode(mode){
+  displayMode=mode;
+  document.getElementById('modeStatic').classList.toggle('active',mode==='static');
+  document.getElementById('modeCarousel').classList.toggle('active',mode==='carousel');
+  document.getElementById('carouselControls').style.display=mode==='carousel'?'block':'none';
+  if(mode==='carousel'){
+    updateCarouselPages();
+  }else{
+    if(!pageConfigs[1])pageConfigs[1]=defaultPageConfig();
+    renderVisualCustom(1);
+  }
+}
+
+function updateCarouselPages(){
+  carouselPageCount=parseInt(document.getElementById('pageCount').value)||3;
+  carouselPageCount=Math.max(2,Math.min(10,carouselPageCount));
+  // Ensure configs exist for all pages
+  for(let i=1;i<=carouselPageCount;i++){
+    if(!pageConfigs[i])pageConfigs[i]=defaultPageConfig();
+  }
+  // Render tabs
+  const tabs=document.getElementById('carouselTabs');
+  let html='';
+  for(let i=1;i<=carouselPageCount;i++){
+    html+=`<div class="carousel-tab${i===activeCarouselPage?' active':''}" onclick="selectCarouselPage(${i})">Pág ${i}</div>`;
+  }
+  tabs.innerHTML=html;
+  if(activeCarouselPage>carouselPageCount)activeCarouselPage=1;
+  renderVisualCustom(activeCarouselPage);
+}
+
+function selectCarouselPage(n){
+  saveCurrentPageConfig();
+  activeCarouselPage=n;
+  document.querySelectorAll('.carousel-tab').forEach((t,i)=>t.classList.toggle('active',i+1===n));
+  renderVisualCustom(n);
+}
+
+function saveCurrentPageConfig(){
+  const p=activeCarouselPage;
+  const area=document.getElementById('visualCustomArea');
+  if(!area.querySelector('[data-field]'))return;
+  const cfg=pageConfigs[p]||defaultPageConfig();
+  // Background
+  cfg.bg.color=getVal('bg-color')||cfg.bg.color;
+  cfg.bg.gradient=getChecked('bg-grad');
+  cfg.bg.color2=getVal('bg-color2')||cfg.bg.color2;
+  cfg.bg.direction=getVal('bg-dir')||cfg.bg.direction;
+  // Title
+  cfg.title.text=getVal('title-text')||'';
+  cfg.title.color=getVal('title-color')||cfg.title.color;
+  cfg.title.gradient=getChecked('title-grad');
+  cfg.title.color2=getVal('title-color2')||cfg.title.color2;
+  cfg.title.direction=getVal('title-dir')||cfg.title.direction;
+  cfg.title.weight=getActiveWeight('title');
+  cfg.title.case=getActiveCase('title');
+  cfg.title.pos=getActivePos('title');
+  // Keyword
+  cfg.keyword.text=getVal('kw-text')||'';
+  cfg.keyword.color=getVal('kw-color')||cfg.keyword.color;
+  cfg.keyword.gradient=getChecked('kw-grad');
+  cfg.keyword.color2=getVal('kw-color2')||cfg.keyword.color2;
+  cfg.keyword.direction=getVal('kw-dir')||cfg.keyword.direction;
+  cfg.keyword.weight=getActiveWeight('kw');
+  cfg.keyword.case=getActiveCase('kw');
+  cfg.keyword.pos=getActivePos('kw');
+  // Secondary
+  cfg.secondary.text=getVal('sec-text')||'';
+  cfg.secondary.color=getVal('sec-color')||cfg.secondary.color;
+  cfg.secondary.gradient=getChecked('sec-grad');
+  cfg.secondary.color2=getVal('sec-color2')||cfg.secondary.color2;
+  cfg.secondary.direction=getVal('sec-dir')||cfg.secondary.direction;
+  cfg.secondary.weight=getActiveWeight('sec');
+  cfg.secondary.case=getActiveCase('sec');
+  cfg.secondary.pos=getActivePos('sec');
+  pageConfigs[p]=cfg;
+}
+
+function getVal(field){const el=document.querySelector('[data-field="'+field+'"]');return el?el.value:null}
+function getChecked(field){const el=document.querySelector('[data-field="'+field+'"]');return el?el.checked:false}
+function getActiveWeight(prefix){const el=document.querySelector('.weight-select[data-prefix="'+prefix+'"] .weight-opt.active');return el?el.dataset.val:'700'}
+function getActiveCase(prefix){const el=document.querySelector('.case-select[data-prefix="'+prefix+'"] .case-opt.active');return el?el.dataset.val:'upper'}
+function getActivePos(prefix){const el=document.querySelector('.pos-grid[data-prefix="'+prefix+'"] .pos-cell.active');return el?el.dataset.val:'mc'}
+
+function renderVisualCustom(pageNum){
+  const cfg=pageConfigs[pageNum]||defaultPageConfig();
+  const area=document.getElementById('visualCustomArea');
+  const label=displayMode==='carousel'?` (Página ${pageNum})`:'';
+
+  area.innerHTML=`
+  <!-- BACKGROUND -->
+  <div class="vc-section">
+    <div class="vc-title">&#127912; Background${label}</div>
+    <div class="vc-row">
+      <span class="vc-label">Cor</span>
+      <input type="color" class="color-pick" value="${cfg.bg.color}" data-field="bg-color">
+      <label class="grad-toggle"><input type="checkbox" ${cfg.bg.gradient?'checked':''} data-field="bg-grad" onchange="toggleGradField(this,'bg-grad-extra')"> Degradê</label>
+    </div>
+    <div class="vc-row" id="bg-grad-extra" style="display:${cfg.bg.gradient?'flex':'none'}">
+      <span class="vc-label">Cor 2</span>
+      <input type="color" class="color-pick" value="${cfg.bg.color2}" data-field="bg-color2">
+      <select class="grad-dir" data-field="bg-dir">
+        <option value="to bottom"${cfg.bg.direction==='to bottom'?' selected':''}>↓ Vertical</option>
+        <option value="to right"${cfg.bg.direction==='to right'?' selected':''}>→ Horizontal</option>
+        <option value="to bottom right"${cfg.bg.direction==='to bottom right'?' selected':''}>↘ Diagonal</option>
+        <option value="to top right"${cfg.bg.direction==='to top right'?' selected':''}>↗ Diagonal inv</option>
+        <option value="135deg"${cfg.bg.direction==='135deg'?' selected':''}>◇ 135°</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- TÍTULO -->
+  ${renderTextSection('Título','title',cfg.title,label)}
+
+  <!-- PALAVRA-CHAVE -->
+  ${renderTextSection('Palavra-chave','kw',cfg.keyword,label)}
+
+  <!-- TEXTO SECUNDÁRIO -->
+  ${renderTextSection('Texto Secundário','sec',cfg.secondary,label)}
+  `;
+}
+
+function renderTextSection(name,prefix,cfg,label){
+  const positions=['tl','tc','tr','ml','mc','mr','bl','bc','br'];
+  const posLabels=['↖','↑','↗','←','●','→','↙','↓','↘'];
+  let posHTML='';
+  positions.forEach((p,i)=>{
+    posHTML+=`<div class="pos-cell${cfg.pos===p?' active':''}" data-val="${p}" onclick="selectPos(this,'${prefix}')">${posLabels[i]}</div>`;
+  });
+
+  return `
+  <div class="vc-section">
+    <div class="vc-title">&#9998; ${name}${label}</div>
+    <div class="vc-row">
+      <span class="vc-label">Texto</span>
+      <input type="text" class="text-input-sm" value="${cfg.text}" data-field="${prefix}-text" placeholder="${name}...">
+    </div>
+    <div class="vc-row">
+      <span class="vc-label">Cor</span>
+      <input type="color" class="color-pick" value="${cfg.color}" data-field="${prefix}-color">
+      <label class="grad-toggle"><input type="checkbox" ${cfg.gradient?'checked':''} data-field="${prefix}-grad" onchange="toggleGradField(this,'${prefix}-grad-extra')"> Degradê</label>
+    </div>
+    <div class="vc-row" id="${prefix}-grad-extra" style="display:${cfg.gradient?'flex':'none'}">
+      <span class="vc-label">Cor 2</span>
+      <input type="color" class="color-pick" value="${cfg.color2}" data-field="${prefix}-color2">
+      <select class="grad-dir" data-field="${prefix}-dir">
+        <option value="to right"${cfg.direction==='to right'?' selected':''}>→ Horizontal</option>
+        <option value="to bottom"${cfg.direction==='to bottom'?' selected':''}>↓ Vertical</option>
+        <option value="to bottom right"${cfg.direction==='to bottom right'?' selected':''}>↘ Diagonal</option>
+      </select>
+    </div>
+    <div class="vc-row">
+      <span class="vc-label">Peso</span>
+      <div class="weight-select" data-prefix="${prefix}">
+        <div class="weight-opt${cfg.weight==='300'?' active':''}" data-val="300" onclick="selectWeight(this)">Light</div>
+        <div class="weight-opt${cfg.weight==='400'?' active':''}" data-val="400" onclick="selectWeight(this)">Regular</div>
+        <div class="weight-opt${cfg.weight==='700'?' active':''}" data-val="700" onclick="selectWeight(this)">Bold</div>
+        <div class="weight-opt${cfg.weight==='900'?' active':''}" data-val="900" onclick="selectWeight(this)">Extra Bold</div>
+      </div>
+    </div>
+    <div class="vc-row">
+      <span class="vc-label">Caixa</span>
+      <div class="case-select" data-prefix="${prefix}">
+        <div class="case-opt${cfg.case==='lower'?' active':''}" data-val="lower" onclick="selectCase(this)">abc</div>
+        <div class="case-opt${cfg.case==='upper'?' active':''}" data-val="upper" onclick="selectCase(this)">ABC</div>
+      </div>
+    </div>
+    <div class="vc-row">
+      <span class="vc-label">Posição</span>
+      <div class="pos-grid" data-prefix="${prefix}">${posHTML}</div>
+      <span style="font-size:9px;color:var(--t3);margin-left:8px">Grid 3x3</span>
+    </div>
+  </div>`;
+}
+
+function toggleGradField(checkbox,extraId){
+  document.getElementById(extraId).style.display=checkbox.checked?'flex':'none';
+}
+
+function selectWeight(el){
+  el.parentElement.querySelectorAll('.weight-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectCase(el){
+  el.parentElement.querySelectorAll('.case-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function selectPos(el,prefix){
+  el.parentElement.querySelectorAll('.pos-cell').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== INIT ON LOAD =====
+document.addEventListener('DOMContentLoaded',function(){
+  initChat();
+  initVisualCustom();
+});
 </script>
 </body>
 </html>
